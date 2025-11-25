@@ -1,0 +1,35 @@
+[package]
+name = "crowley_frame"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "crowley_frame"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Python ↔ Rust bridge; use 0.21 so the APIs match the code
+pyo3 = { version = "0.21", features = ["extension-module"] }
+
+# Polars backend (Rust)
+polars = { version = "0.42", features = [
+    "lazy",
+    "dtype-categorical",
+    "dtype-datetime",
+    "fmt",
+    "unique_counts",
+    "strings",
+    "dtype-struct"
+] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+
+# Needed so Polars can use raw hash tables for categorical indexing
+hashbrown = { version = "0.14", features = ["raw"] }
+
+# Regex for col.matches()
+regex = "1.10"
+
+# Helpful on Windows (not strictly required, but safe)
+once_cell = "1.18"

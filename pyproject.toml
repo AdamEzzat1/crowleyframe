@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "crowleyframe"
+version = "0.1.0"
+description = "crowley-frame: tidyverse-style data manipulation in Python, powered by Rust/Polars"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Adam Ezzat", email = "adamezzat24@gmail.com" }
+]
+
+[project.urls]
+Homepage = "https://github.com/AdamEzzat1/crowley-frame"
+
+[tool.maturin]
+python-source = "python"
+module-name = "crowleyframe._crowley"
+features = ["pyo3/extension-module"]
