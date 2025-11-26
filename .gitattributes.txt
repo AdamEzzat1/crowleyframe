@@ -1,0 +1,27 @@
+# Normalize all text files
+* text=auto
+
+# Explicit LF for source files
+*.rs   text eol=lf
+*.py   text eol=lf
+*.toml text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+
+# Binary files
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.whl  binary
+*.pyd  binary
+*.so   binary
+*.dll  binary
+*.exe  binary

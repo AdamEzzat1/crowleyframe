@@ -1,536 +1,609 @@
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
+from dataclasses import dataclass
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Union
 
-from . import _crowley
+import numpy as np
+import pandas as pd
+import polars as pl
+import pyarrow as pa
 
-
-# -----------------------------
-# Window helper marker classes
-# -----------------------------
-class _Lag:
-    def __init__(self, col: str, n: int = 1):
-        self.col = col
-        self.n = n
+from . import _crowley  # Rust extension module
 
 
-class _Lead:
-    def __init__(self, col: str, n: int = 1):
-        self.col = col
-        self.n = n
+# ---------------------------------------------------------------------------
+# Window specs: lag / lead / rolling_mean
+# ---------------------------------------------------------------------------
 
 
-class _RollingMean:
-    def __init__(self, col: str, window: int, min_periods: int | None = None):
-        self.col = col
-        self.window = window
-        self.min_periods = min_periods if min_periods is not None else 1
+@dataclass
+class LagSpec:
+    column: str
+    n: int = 1
 
 
-def lag(col: str, n: int = 1) -> _Lag:
-    """Declare a lag window op for use inside mutate()."""
-    return _Lag(col, n)
+@dataclass
+class LeadSpec:
+    column: str
+    n: int = 1
 
 
-def lead(col: str, n: int = 1) -> _Lead:
-    """Declare a lead window op for use inside mutate()."""
-    return _Lead(col, n)
+@dataclass
+class RollingMeanSpec:
+    column: str
+    window: int
+    min_periods: int = 1
 
 
-def rolling_mean(col: str, window: int, min_periods: int | None = None) -> _RollingMean:
-    """Declare a rolling mean op for use inside mutate()."""
-    return _RollingMean(col, window, min_periods=min_periods)
+def lag(column: str, n: int = 1) -> LagSpec:
+    """Specification for lag(column, n) inside mutate."""
+    return LagSpec(column=column, n=n)
+
+
+def lead(column: str, n: int = 1) -> LeadSpec:
+    """Specification for lead(column, n) inside mutate."""
+    return LeadSpec(column=column, n=n)
+
+
+def rolling_mean(column: str, window: int, min_periods: int = 1) -> RollingMeanSpec:
+    """Specification for rolling_mean(column, window) inside mutate."""
+    return RollingMeanSpec(column=column, window=window, min_periods=min_periods)
+
+
+# ---------------------------------------------------------------------------
+# Core Frame wrapper
+# ---------------------------------------------------------------------------
 
 
 class Frame:
     """
-    Python wrapper over the Rust Frame.
+    High-level crowleyframe dataframe wrapper.
 
-    For v0.1:
-    - Heavy lifting for `select` + `clean_names` happens in Rust.
-    - Higher-level verbs (filter, arrange, group_by/summarise, distinct, count, skim,
-      mutate, rename, drop, joins, windows) are implemented in Python on top of pandas,
-      then passed back into Rust via from_dict().
+    Under the hood, holds a Rust/Polars-backed `_crowley.Frame`, but most
+    high-level verbs are currently implemented via pandas for v0.1/v0.2.
     """
 
-    def __init__(self, inner: _crowley.Frame):
+    def __init__(self, inner: "_crowley.Frame"):
         self._inner = inner
 
-    # -----------------------------
-    # Core Rust-backed operations
-    # -----------------------------
-    def select(self, *selectors: Any) -> "Frame":
+    # -----------------------
+    # Constructors & interop
+    # -----------------------
+
+    @classmethod
+    def from_pandas(cls, pdf: pd.DataFrame) -> "Frame":
         """
-        Column selection via crowleyframe.col selectors.
+        Build a Frame from a pandas DataFrame by converting to dict-of-lists
+        and calling the Rust from_dict constructor.
         """
-        return Frame(self._inner.select(list(selectors)))
+        data = {col: pdf[col].tolist() for col in pdf.columns}
+        inner = _crowley.Frame.from_dict(data)  # type: ignore[attr-defined]
+        return cls(inner)
+
+    def to_dict(self) -> Dict[str, List[Any]]:
+        """Return a dict-of-lists representation."""
+        return self._inner.to_dict()  # type: ignore[attr-defined]
+
+    def to_pandas(self) -> pd.DataFrame:
+        """Convert to a pandas DataFrame."""
+        return pd.DataFrame(self._inner.to_dict())  # type: ignore[attr-defined]
+
+    def to_polars(self) -> pl.DataFrame:
+        """Convert to a polars DataFrame."""
+        return pl.DataFrame(self._inner.to_dict())  # type: ignore[attr-defined]
+
+    def to_numpy(self) -> np.ndarray:
+        """Convert to a numpy array."""
+        return self.to_pandas().to_numpy()
+
+    def to_arrow(self) -> pa.Table:
+        """Convert to a pyarrow Table."""
+        return pa.table(self._inner.to_dict())  # type: ignore[attr-defined]
+
+    # -----------------------
+    # Display
+    # -----------------------
+
+    def __repr__(self) -> str:  # pragma: no cover - cosmetic
+        return repr(self.to_pandas())
+
+    # -----------------------
+    # Core tidy-like verbs
+    # -----------------------
 
     def clean_names(self) -> "Frame":
         """
-        Clean column names to snake_case-ish style (Rust side).
+        Standardize column names (implemented in Rust/Polars).
         """
-        return Frame(self._inner.clean_names())
-
-    def to_dict(self) -> dict:
-        """
-        Round-trip the internal Rust/Polars DataFrame back to a
-        Python dict-of-lists.
-        """
-        return self._inner.to_dict()  # type: ignore[no-any-return]
-
-    # -----------------------------
-    # Interop: pandas / polars / numpy / arrow
-    # -----------------------------
-    def to_pandas(self):
-        """
-        Convert to a pandas DataFrame.
-
-        For v0.1 this is implemented via dict-of-lists. Good enough and simple.
-        """
-        import pandas as pd
-
-        return pd.DataFrame(self.to_dict())
-
-    def to_polars(self):
-        """
-        Convert to a Python polars.DataFrame.
-
-        Again, via dict-of-lists for v0.1.
-        """
-        import polars as pl  # type: ignore[import-not-found]
-
-        return pl.DataFrame(self.to_dict())
-
-    def to_numpy(self):
-        """
-        Convert to a NumPy array (values only).
-        """
-        return self.to_pandas().to_numpy()
-
-    def to_arrow(self):
-        """
-        Convert to a pyarrow.Table.
-        """
-        import pyarrow as pa  # type: ignore[import-not-found]
-
-        return pa.Table.from_pydict(self.to_dict())
-
-    # -----------------------------
-    # A. filter()
-    # -----------------------------
-    def filter(self, expr: str | None = None, mask: Any | None = None) -> "Frame":
-        """
-        Filter rows.
-
-        For v0.1:
-        - If `expr` is given: uses pandas.DataFrame.query(expr).
-          Example: cf.filter("user_score > 10 and user_id != 2")
-        - If `mask` is given: boolean mask applied like df[mask].
-        """
-        import pandas as pd  # noqa: F401
-
-        pdf = self.to_pandas()
-
-        if expr is not None:
-            pdf2 = pdf.query(expr, engine="python")
-        elif mask is not None:
-            pdf2 = pdf[mask]
-        else:
-            # nothing to filter, just return self
-            return self
-
-        inner = _crowley.Frame.from_dict(pdf2.to_dict(orient="list"))  # type: ignore[attr-defined]
+        inner = self._inner.clean_names()  # type: ignore[attr-defined]
         return Frame(inner)
 
-    # -----------------------------
-    # B. arrange()
-    # -----------------------------
-    def arrange(self, *columns: str) -> "Frame":
+    def select(self, *selectors: Any) -> "Frame":
+        """
+        Column selection using the `col` DSL or raw names.
+
+        Example:
+            cf.select(col.starts_with("user_"), "id")
+        """
+        if len(selectors) == 1 and isinstance(selectors[0], (list, tuple)):
+            arg = selectors[0]
+        else:
+            arg = list(selectors)
+        inner = self._inner.select(arg)  # type: ignore[attr-defined]
+        return Frame(inner)
+
+    def filter(self, expr: str) -> "Frame":
+        """
+        Row filtering using a pandas-style expression string.
+
+        Example:
+            cf.filter("user_score > 10 & user_id != 3")
+        """
+        pdf = self.to_pandas()
+        mask = pdf.eval(expr, engine="python")
+        out = pdf[mask]
+        return Frame.from_pandas(out)
+
+    def arrange(self, *keys: str) -> "Frame":
         """
         Sort rows by one or more columns.
 
-        Usage:
-            cf.arrange("user_id")             # ascending
-            cf.arrange("-user_score")         # descending on user_score
-            cf.arrange("user_id", "-user_score")
-
-        A leading '-' means descending.
+        Use a leading '-' for descending order:
+            cf.arrange("-user_score", "user_id")
         """
-        import pandas as pd  # noqa: F401
-
-        pdf = self.to_pandas()
-
-        if not columns:
+        if not keys:
             return self
 
-        by: list[str] = []
-        ascending: list[bool] = []
+        pdf = self.to_pandas()
+        by: List[str] = []
+        ascending: List[bool] = []
 
-        for col in columns:
-            if isinstance(col, str) and col.startswith("-"):
-                by.append(col[1:])
+        for k in keys:
+            if k.startswith("-"):
+                by.append(k[1:])
                 ascending.append(False)
+            elif k.startswith("+"):
+                by.append(k[1:])
+                ascending.append(True)
             else:
-                by.append(col)
+                by.append(k)
                 ascending.append(True)
 
-        pdf2 = pdf.sort_values(by=by, ascending=ascending, kind="mergesort")
+        out = pdf.sort_values(by=by, ascending=ascending)
+        return Frame.from_pandas(out)
 
-        inner = _crowley.Frame.from_dict(pdf2.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+    # -----------------------
+    # Grouped semantics
+    # -----------------------
 
-    # -----------------------------
-    # C. group_by() / summarise()
-    # -----------------------------
     def group_by(self, *cols: str) -> "GroupedFrame":
         """
-        Start a grouped pipeline.
-
-        Example:
-            (cf.clean_names()
-               .group_by("user_id")
-               .summarise(
-                   mean_score=("user_score", "mean"),
-                   n=("user_score", "count"),
-               ))
+        Returns a GroupedFrame; subsequent summarise() acts per-group.
         """
-        if not cols:
-            raise ValueError("group_by(...) requires at least one column name")
-        return GroupedFrame(self, list(cols))
-
-    # -----------------------------
-    # D. distinct() and count()
-    # -----------------------------
-    def distinct(self, *cols: str) -> "Frame":
-        """
-        Drop duplicate rows.
-
-        If cols are provided, dedupe on those columns only.
-        Otherwise, dedupe on all columns.
-        """
-        import pandas as pd  # noqa: F401
-
         pdf = self.to_pandas()
+        return GroupedFrame(pdf, list(cols))
 
-        if cols:
-            pdf2 = pdf.drop_duplicates(subset=list(cols))
-        else:
-            pdf2 = pdf.drop_duplicates()
-
-        inner = _crowley.Frame.from_dict(pdf2.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
-
-    def count(self, *cols: str, sort: bool = False, prop: bool = False) -> "Frame":
+    def summarise(self, **kwargs: Any) -> "Frame":
         """
-        Tidyverse-style count(): group + summarise(n = n()).
-
-        Examples:
-            cf.count("user_id")
-            cf.count("user_id", "group", sort=True, prop=True)
+        Ungrouped summarise over the whole frame.
         """
-        import pandas as pd  # noqa: F401
-
         pdf = self.to_pandas()
+        row: Dict[str, Any] = {}
 
-        if cols:
-            g = pdf.groupby(list(cols), dropna=False)
-            out = g.size().reset_index(name="n")
-        else:
-            # Treat as a single group: just count rows
-            n = len(pdf)
-            out = pd.DataFrame({"n": [n]})  # type: ignore[name-defined]
-
-        if prop:
-            total = out["n"].sum()
-            if total > 0:
-                out["prop"] = out["n"] / total
+        for out_name, spec in kwargs.items():
+            if isinstance(spec, tuple) and len(spec) == 2:
+                colname, func = spec
+                s = pdf[colname]
+                if isinstance(func, str):
+                    val = getattr(s, func)()
+                else:
+                    val = func(s)
             else:
-                out["prop"] = 0.0
+                if callable(spec):
+                    val = spec(pdf)
+                else:
+                    val = spec
+            row[out_name] = val
 
-        if sort:
-            out = out.sort_values(by="n", ascending=False)
+        out = pd.DataFrame([row])
+        return Frame.from_pandas(out)
 
-        inner = _crowley.Frame.from_dict(out.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+    # -----------------------
+    # mutate / rename / drop
+    # -----------------------
 
-    # -----------------------------
-    # E. skim(): minimal profiling
-    # -----------------------------
-    def skim(self) -> "Frame":
+    def mutate(self, **kwargs: Any) -> "Frame":
         """
-        Minimal skim/profile of each column, inspired by skimr.
+        Add or modify columns.
 
-        Output columns (for v0.1):
-            variable, type, n, n_missing, n_unique,
-            mean, sd, min, q25, median, q75, max (for numerics)
+        Each kwarg value can be:
+        - a string expression (evaluated with pandas.eval using existing columns)
+        - a LagSpec / LeadSpec / RollingMeanSpec
+        - a callable(pdf) -> Series or array-like
+        - a scalar / list-like
         """
-        import pandas as pd
-        from pandas.api import types as ptypes
-
         pdf = self.to_pandas()
+        env: Dict[str, Any] = {col: pdf[col] for col in pdf.columns}
 
-        rows: list[dict[str, Any]] = []
-
-        for col in pdf.columns:
-            s = pdf[col]
-            dtype = str(s.dtype)
-            n = int(len(s))
-            n_missing = int(s.isna().sum())
-            n_unique = int(s.nunique(dropna=True))
-
-            row: dict[str, Any] = {
-                "variable": col,
-                "type": dtype,
-                "n": n,
-                "n_missing": n_missing,
-                "n_unique": n_unique,
-            }
-
-            if ptypes.is_numeric_dtype(s):
-                row.update(
-                    {
-                        "mean": float(s.mean()) if n > 0 else None,
-                        "sd": float(s.std()) if n > 1 else None,
-                        "min": float(s.min()) if n > 0 else None,
-                        "q25": float(s.quantile(0.25)) if n > 0 else None,
-                        "median": float(s.median()) if n > 0 else None,
-                        "q75": float(s.quantile(0.75)) if n > 0 else None,
-                        "max": float(s.max()) if n > 0 else None,
-                    }
-                )
-            else:
-                # Non-numeric: basic placeholders
-                row.setdefault("mean", None)
-                row.setdefault("sd", None)
-                row.setdefault("min", None)
-                row.setdefault("q25", None)
-                row.setdefault("median", None)
-                row.setdefault("q75", None)
-                row.setdefault("max", None)
-
-            rows.append(row)
-
-        skim_df = pd.DataFrame(rows)
-        inner = _crowley.Frame.from_dict(skim_df.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
-
-    # -----------------------------
-    # NEW: mutate / rename / drop
-    # -----------------------------
-    def mutate(self, **new_cols: Any) -> "Frame":
-        """
-        Add or transform columns.
-
-        Supported value types:
-        - callable(pdf) -> Series or array-like
-        - window ops: lag("col"), lead("col"), rolling_mean("col", window)
-        - string: expression evaluated with pandas.eval
-        - scalar / list-like: assigned directly
-
-        Example:
-            cf.mutate(
-                z = "(score - score.mean()) / score.std()",
-                lag_score = lag("score"),
-            )
-        """
-        import pandas as pd  # noqa: F401
-
-        pdf = self.to_pandas()
-
-        for name, expr in new_cols.items():
-            if isinstance(expr, _Lag):
-                pdf[name] = pdf[expr.col].shift(expr.n)
-            elif isinstance(expr, _Lead):
-                pdf[name] = pdf[expr.col].shift(-expr.n)
-            elif isinstance(expr, _RollingMean):
+        for name, spec in kwargs.items():
+            if isinstance(spec, LagSpec):
+                pdf[name] = pdf[spec.column].shift(spec.n)
+            elif isinstance(spec, LeadSpec):
+                pdf[name] = pdf[spec.column].shift(-spec.n)
+            elif isinstance(spec, RollingMeanSpec):
                 pdf[name] = (
-                    pdf[expr.col]
-                    .rolling(expr.window, min_periods=expr.min_periods)
+                    pdf[spec.column]
+                    .rolling(spec.window, min_periods=spec.min_periods)
                     .mean()
                 )
-            elif callable(expr):
-                pdf[name] = expr(pdf)
-            elif isinstance(expr, str):
-                # Use pandas.eval in the DataFrame context
-                pdf[name] = pdf.eval(expr)
+            elif isinstance(spec, str):
+                pdf[name] = pd.eval(spec, engine="python", local_dict=env)
+            elif callable(spec):
+                val = spec(pdf)
+                pdf[name] = val
             else:
-                # Fallback: assign directly (scalar or list-like)
-                pdf[name] = expr
+                pdf[name] = spec
 
-        inner = _crowley.Frame.from_dict(pdf.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+            env[name] = pdf[name]
 
-    def rename(self, **mapping: str) -> "Frame":
+        return Frame.from_pandas(pdf)
+
+    def rename(self, **kwargs: str) -> "Frame":
         """
-        Rename columns: cf.rename(old_name="new_name").
-        """
-        import pandas as pd  # noqa: F401
+        Rename columns by name:
 
+            cf.rename(user_id="id", user_score="score")
+        """
         pdf = self.to_pandas()
-        pdf2 = pdf.rename(columns=mapping)
-        inner = _crowley.Frame.from_dict(pdf2.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+        out = pdf.rename(columns=kwargs)
+        return Frame.from_pandas(out)
 
     def drop(self, *cols: str) -> "Frame":
         """
-        Drop one or more columns.
+        Drop one or more columns:
 
-        Example:
             cf.drop("temp", "debug_flag")
         """
-        import pandas as pd  # noqa: F401
-
-        if not cols:
-            return self
-
         pdf = self.to_pandas()
-        pdf2 = pdf.drop(columns=list(cols), errors="ignore")
-        inner = _crowley.Frame.from_dict(pdf2.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+        out = pdf.drop(columns=list(cols))
+        return Frame.from_pandas(out)
 
-    # -----------------------------
-    # NEW: Joins
-    # -----------------------------
-    def left_join(self, other: "Frame", on: str | Sequence[str]) -> "Frame":
+    # -----------------------
+    # Distinct / count
+    # -----------------------
+
+    def distinct(self, *cols: str) -> "Frame":
         """
-        Left join with another Frame.
-
-        Example:
-            cf1.left_join(cf2, on="id")
-            cf1.left_join(cf2, on=["id", "date"])
+        Distinct rows, optionally on a subset of columns.
         """
-        import pandas as pd  # noqa: F401
-
-        pdf1 = self.to_pandas()
-        pdf2 = other.to_pandas()
-
-        if isinstance(on, str):
-            on_cols = [on]
+        pdf = self.to_pandas()
+        if cols:
+            out = pdf.drop_duplicates(subset=list(cols))
         else:
-            on_cols = list(on)
+            out = pdf.drop_duplicates()
+        return Frame.from_pandas(out)
 
-        out = pdf1.merge(pdf2, how="left", on=on_cols)
-        inner = _crowley.Frame.from_dict(out.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
-
-    def inner_join(self, other: "Frame", on: str | Sequence[str]) -> "Frame":
+    def count(self, *cols: str, sort: bool = False, prop: bool = False) -> "Frame":
         """
-        Inner join with another Frame.
+        Grouped counts, similar to dplyr::count().
         """
-        import pandas as pd  # noqa: F401
+        pdf = self.to_pandas()
 
-        pdf1 = self.to_pandas()
-        pdf2 = other.to_pandas()
-
-        if isinstance(on, str):
-            on_cols = [on]
+        if cols:
+            grouped = pdf.groupby(list(cols), dropna=False)
+            counts = grouped.size().reset_index(name="n")
         else:
-            on_cols = list(on)
+            counts = pd.DataFrame({"n": [len(pdf)]})
 
-        out = pdf1.merge(pdf2, how="inner", on=on_cols)
-        inner = _crowley.Frame.from_dict(out.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+        if sort:
+            counts = counts.sort_values("n", ascending=False)
 
-    # -----------------------------
-    # Pipe operator support (>> and |)
-    # -----------------------------
-    def __rshift__(self, other: Any):
-        """
-        Allow: cf >> pipe.group_by("id") >> pipe.summarise(...)
-        """
-        if callable(other):
-            return other(self)
-        return NotImplemented
+        if prop:
+            total = counts["n"].sum()
+            if total:
+                counts["prop"] = counts["n"] / float(total)
+            else:
+                counts["prop"] = 0.0
 
-    def __or__(self, other: Any):
-        """
-        Allow: cf | pipe.group_by("id") | pipe.summarise(...)
-        """
-        if callable(other):
-            return other(self)
-        return NotImplemented
+        return Frame.from_pandas(counts)
 
-    # -----------------------------
-    # Misc
-    # -----------------------------
-    def __repr__(self) -> str:  # pragma: no cover - passthrough
-        return repr(self._inner)
+    # -----------------------
+    # Joins
+    # -----------------------
+
+    def left_join(
+        self,
+        other: "Frame",
+        on: Union[str, Sequence[str]],
+    ) -> "Frame":
+        """Tidyverse-style left_join."""
+        pdf_left = self.to_pandas()
+        pdf_right = other.to_pandas()
+        out = pdf_left.merge(pdf_right, how="left", on=on)
+        return Frame.from_pandas(out)
+
+    def inner_join(
+        self,
+        other: "Frame",
+        on: Union[str, Sequence[str]],
+    ) -> "Frame":
+        """Tidyverse-style inner_join."""
+        pdf_left = self.to_pandas()
+        pdf_right = other.to_pandas()
+        out = pdf_left.merge(pdf_right, how="inner", on=on)
+        return Frame.from_pandas(out)
+
+    # -----------------------
+    # skim: quick profiling
+    # -----------------------
+
+    def skim(self) -> "Frame":
+        """
+        Simple skim() summary for each column:
+        variable, type, n, n_missing, n_unique, mean, sd, min, q25, median, q75, max
+        """
+        pdf = self.to_pandas()
+        rows: List[Dict[str, Any]] = []
+
+        for col in pdf.columns:
+            s = pdf[col]
+            n = len(s)
+            n_missing = int(s.isna().sum())
+            n_unique = int(s.nunique(dropna=True))
+            dtype = str(s.dtype)
+
+            if pd.api.types.is_numeric_dtype(s):
+                mean = s.mean()
+                sd = s.std()
+                minv = s.min()
+                maxv = s.max()
+                q = s.quantile([0.25, 0.5, 0.75])
+                q25 = q.get(0.25, np.nan)
+                q50 = q.get(0.5, np.nan)
+                q75 = q.get(0.75, np.nan)
+            else:
+                mean = sd = minv = maxv = np.nan
+                q25 = q50 = q75 = np.nan
+
+            rows.append(
+                {
+                    "variable": col,
+                    "type": dtype,
+                    "n": n,
+                    "n_missing": n_missing,
+                    "n_unique": n_unique,
+                    "mean": mean,
+                    "sd": sd,
+                    "min": minv,
+                    "q25": q25,
+                    "median": q50,
+                    "q75": q75,
+                    "max": maxv,
+                }
+            )
+
+        out = pd.DataFrame(
+            rows,
+            columns=[
+                "variable",
+                "type",
+                "n",
+                "n_missing",
+                "n_unique",
+                "mean",
+                "sd",
+                "min",
+                "q25",
+                "median",
+                "q75",
+                "max",
+            ],
+        )
+        return Frame.from_pandas(out)
+
+    # -----------------------
+    # Tidyr-style reshaping: pivot_longer / pivot_wider
+    # -----------------------
+
+    def pivot_longer(
+        self,
+        *cols: Any,
+        names_to: str = "name",
+        values_to: str = "value",
+    ) -> "Frame":
+        """
+        Tidyverse-style pivot_longer.
+        """
+        pdf = self.to_pandas()
+
+        if cols:
+            selected = self.select(*cols)
+            selected_cols = list(selected.to_pandas().columns)
+        else:
+            selected_cols = list(pdf.columns)
+
+        id_cols = [c for c in pdf.columns if c not in selected_cols]
+
+        long_pdf = pdf.melt(
+            id_vars=id_cols,
+            value_vars=selected_cols,
+            var_name=names_to,
+            value_name=values_to,
+        )
+
+        return Frame.from_pandas(long_pdf)
+
+    def pivot_wider(
+        self,
+        names_from: str,
+        values_from: str,
+        values_fill: Optional[Any] = None,
+    ) -> "Frame":
+        """
+        Tidyverse-style pivot_wider.
+        """
+        pdf = self.to_pandas()
+
+        id_cols = [c for c in pdf.columns if c not in (names_from, values_from)]
+
+        wide = pdf.pivot_table(
+            index=id_cols if id_cols else None,
+            columns=names_from,
+            values=values_from,
+            aggfunc="first",
+            fill_value=values_fill,
+        )
+
+        wide = wide.reset_index()
+        wide.columns = [str(c) for c in wide.columns]
+
+        return Frame.from_pandas(wide)
+
+    # -----------------------
+    # separate / unite (tidyr-style)
+    # -----------------------
+
+    def separate(
+        self,
+        column: str,
+        into: Sequence[str],
+        sep: str = r"\s+",
+        remove: bool = True,
+    ) -> "Frame":
+        """
+        Tidyverse-style separate: split one column into multiple columns.
+        """
+        pdf = self.to_pandas().copy()
+
+        if column not in pdf.columns:
+            raise KeyError(f"Column {column!r} not found in frame")
+
+        split = (
+            pdf[column]
+            .astype("string")
+            .str.split(sep, expand=True, regex=True)
+        )
+
+        if split.shape[1] < len(into):
+            for _ in range(len(into) - split.shape[1]):
+                split[split.shape[1]] = np.nan
+
+        for i, name in enumerate(into):
+            pdf[name] = split.iloc[:, i]
+
+        if remove:
+            pdf = pdf.drop(columns=[column])
+
+        return Frame.from_pandas(pdf)
+
+    def unite(
+        self,
+        new_column: str,
+        columns: Sequence[str],
+        sep: str = "_",
+        remove: bool = True,
+        na_rm: bool = False,
+    ) -> "Frame":
+        """
+        Tidyverse-style unite: combine multiple columns into one.
+
+        Semantics:
+        - na_rm=False (default): if any value in the row is NA -> result is NA
+        - na_rm=True: drop NA values and join the remaining parts
+        """
+        pdf = self.to_pandas().copy()
+        cols = list(columns)
+
+        # 1. Check columns exist
+        for c in cols:
+            if c not in pdf.columns:
+                raise KeyError(f"Column {c!r} not found in frame")
+
+        if not na_rm:
+            # Row is NA if ANY of the component columns is NA
+            row_has_na = pdf[cols].isna().any(axis=1)
+
+            def combine_row_no_rm(row: pd.Series) -> Any:
+                if row_has_na.loc[row.name]:
+                    return np.nan
+                return sep.join(str(v) for v in row[cols])
+
+            pdf[new_column] = pdf.apply(combine_row_no_rm, axis=1)
+        else:
+            # na_rm=True: drop NA values and join remaining
+            def combine_row_rm(row: pd.Series) -> str:
+                s = row[cols]
+                non_missing = s[~s.isna()]
+                return sep.join(str(v) for v in non_missing)
+
+            pdf[new_column] = pdf.apply(combine_row_rm, axis=1)
+
+        if remove:
+            pdf = pdf.drop(columns=cols)
+
+        return Frame.from_pandas(pdf)
+
+
+# ---------------------------------------------------------------------------
+# GroupedFrame wrapper
+# ---------------------------------------------------------------------------
 
 
 class GroupedFrame:
     """
-    Lightweight grouped wrapper for v0.1, implemented in Python on top of pandas.
-
-    You obtain this via Frame.group_by(...)
-    and then call summarise(...) on it.
+    Wrapper around a pandas GroupBy used by Frame.group_by(...).
     """
 
-    def __init__(self, frame: Frame, group_cols: Sequence[str]):
-        self._frame = frame
-        self.group_cols = list(group_cols)
+    def __init__(self, pdf: pd.DataFrame, by: List[str]):
+        self._pdf = pdf
+        self._by = by
 
-    def summarise(self, **agg_specs: tuple[str, str]) -> Frame:
+    def summarise(self, **kwargs: Any) -> Frame:
         """
-        Summarise grouped data.
-
-        agg_specs: new_column = (source_column, agg_func)
-
-        Example:
-            cf.group_by("user_id").summarise(
-                mean_score=("user_score", "mean"),
-                n=("user_score", "count"),
-            )
+        Group-wise aggregation.
         """
-        import pandas as pd  # noqa: F401
+        grouped = self._pdf.groupby(self._by, dropna=False)
+        rows: List[Dict[str, Any]] = []
 
-        pdf = self._frame.to_pandas()
-        g = pdf.groupby(self.group_cols, dropna=False)
+        for key, sub in grouped:
+            row: Dict[str, Any] = {}
 
-        # Use pandas named aggregation
-        named_aggs: dict[str, tuple[str, str]] = {}
-        for new_name, (src_col, func) in agg_specs.items():
-            named_aggs[new_name] = (src_col, func)
+            if len(self._by) == 1:
+                row[self._by[0]] = key
+            else:
+                for col, val in zip(self._by, key):
+                    row[col] = val
 
-        if not named_aggs:
-            # If no aggs are provided, just return unique groups
-            out = g.size().reset_index(name="n")
-        else:
-            out = g.agg(**named_aggs).reset_index()
+            for out_name, spec in kwargs.items():
+                if isinstance(spec, tuple) and len(spec) == 2:
+                    colname, func = spec
+                    s = sub[colname]
+                    if isinstance(func, str):
+                        val = getattr(s, func)()
+                    else:
+                        val = func(s)
+                else:
+                    if callable(spec):
+                        val = spec(sub)
+                    else:
+                        val = spec
 
-        inner = _crowley.Frame.from_dict(out.to_dict(orient="list"))  # type: ignore[attr-defined]
-        return Frame(inner)
+                row[out_name] = val
 
-    # Pipe support for grouped objects too
-    def __rshift__(self, other: Any):
-        if callable(other):
-            return other(self)
-        return NotImplemented
+            rows.append(row)
 
-    def __or__(self, other: Any):
-        if callable(other):
-            return other(self)
-        return NotImplemented
+        out = pd.DataFrame(rows)
+        return Frame.from_pandas(out)
 
 
-def df(obj: Any) -> Frame:
+# ---------------------------------------------------------------------------
+# Top-level helper
+# ---------------------------------------------------------------------------
+
+
+def df(data: Mapping[str, Sequence[Any]]) -> Frame:
     """
-    Construct a Frame from:
-    - dict-of-lists
-    - pandas.DataFrame
-
-    For dicts, we normalize through pandas.DataFrame first so that
-    None in numeric columns becomes NaN and types are inferred properly.
+    Construct a crowleyframe Frame from a dict-of-lists-style mapping.
     """
-    import pandas as pd
-
-    if isinstance(obj, pd.DataFrame):
-        pdf = obj
-    elif isinstance(obj, dict):
-        # Let pandas handle None / NaN / dtype inference
-        pdf = pd.DataFrame(obj)
-    else:
-        raise TypeError("df() currently accepts dict or pandas.DataFrame")
-
-    data: Mapping[str, list] = pdf.to_dict(orient="list")
-    inner = _crowley.Frame.from_dict(data)  # type: ignore[attr-defined]
+    inner = _crowley.Frame.from_dict(dict(data))  # type: ignore[attr-defined]
     return Frame(inner)
