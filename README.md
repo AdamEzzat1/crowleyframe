@@ -1,5 +1,3 @@
----
-
 # 📦 **crowley-frame**
 
 ### *A Rust-powered, tidyverse-inspired DataFrame manipulation library for Python*
