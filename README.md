@@ -1,5 +1,3 @@
-Here is your README **cleanly converted into proper Markdown**, **without the surrounding code fences**, ready to paste directly into `README.md` on GitHub or PyPI.
-
 ---
 
 # 📦 **crowley-frame**
