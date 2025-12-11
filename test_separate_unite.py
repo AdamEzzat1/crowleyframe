@@ -1,4 +1,4 @@
-from crowleyframe import df
+from crowley_frame import df
 
 
 def test_separate_basic():

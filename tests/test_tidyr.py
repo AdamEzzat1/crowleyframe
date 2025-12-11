@@ -1,4 +1,4 @@
-from crowleyframe import df, col
+from crowley_frame import df, col
 
 
 def test_pivot_longer_basic():

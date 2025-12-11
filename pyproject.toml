@@ -1,22 +1,57 @@
 [build-system]
-requires = ["maturin>=1.4,<2.0"]
+requires = ["maturin>=1.7,<2.0"]
 build-backend = "maturin"
 
 [project]
 name = "crowleyframe"
 version = "0.1.0"
-description = "crowley-frame: tidyverse-style data manipulation in Python, powered by Rust/Polars"
+description = "A Rust-powered, tidyverse-inspired DataFrame manipulation library for Python."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 license = { text = "MIT" }
+
 authors = [
     { name = "Adam Ezzat", email = "adamezzat24@gmail.com" }
 ]
 
+keywords = [
+    "dataframe",
+    "data-analysis",
+    "tidyverse",
+    "dplyr",
+    "tidyr",
+    "rust",
+    "pyo3",
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries",
+]
+
+dependencies = [
+    "pandas>=1.5",
+    "numpy>=1.23",
+]
+
 [project.urls]
 Homepage = "https://github.com/AdamEzzat1/crowley-frame"
+Repository = "https://github.com/AdamEzzat1/crowley-frame"
+Issues =  "https://github.com/AdamEzzat1/crowley-frame"
 
 [tool.maturin]
+# The Rust crate that builds the Python extension
+bindings = "pyo3"
+# Where the Python package lives
 python-source = "python"
-module-name = "crowleyframe._crowley"
-features = ["pyo3/extension-module"]
+# This must match the Rust crate name in Cargo.toml
+module-name = "crowley_frame._crowley"
+
