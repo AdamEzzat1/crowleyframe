@@ -1,361 +1,250 @@
-Here is your README **cleanly converted into proper Markdown**, **without the surrounding code fences**, ready to paste directly into `README.md` on GitHub or PyPI.
+# crowley-frame
 
----
+Tidyverse-style data manipulation for Python that compiles to Polars lazy plans.
 
-# 📦 **crowley-frame**
-
-### *A Rust-powered, tidyverse-inspired DataFrame manipulation library for Python*
-
-**crowley-frame** brings the ergonomics of **dplyr/tidyr** to Python—backed by **Rust** for safety, speed, and expressive semantics.
-
-If you know **R’s tidyverse**, this feels natural.
-If you know **pandas**, this gives you a more composable, readable syntax with a proper grammar of data manipulation.
-
----
-
-# ✅ Features Proven by the Test Suite (18 Tests Passed)
-
-The following features are not theoretical — they are **fully implemented and validated** through the test suite.
-
----
-
-## 🔍 Column Selection + Tidy Selectors
-
-*(From `test_select_and_col.py`)*
-
-Supports:
-
-* selecting by **name**
-* `col.starts_with()`
-* `col.ends_with()`
-* `col.contains()`
-* `col.matches(regex)`
-* mixing names + selectors
-
-### Example
+You write dplyr/tidyr-shaped pipelines; crowley-frame turns each verb into
+part of a `polars.LazyFrame` plan and runs nothing until you ask for the
+result. Polars does the work, so performance tracks hand-written Polars.
 
 ```python
-cf = df({"user_id": [1,2], "score_a": [10,20], "score_b": [5,7]})
-cf.select(col("user_id"), col.starts_with("score")).to_pandas()
-```
+import crowley_frame as cr
+from crowley_frame import df, col, pipe, mean, n, desc
 
-**Output**
-
-```
-   user_id  score_a  score_b
-0        1       10        5
-1        2       20        7
-```
-
----
-
-## ✨ mutate(), lag(), lead(), rolling_mean()
-
-*(From `test_mutate_lag_lead_rolling.py`)*
-
-You can:
-
-* create new columns with expressions
-* compute window offsets (`lag`, `lead`)
-* compute rolling window statistics (e.g., rolling mean)
-
-### Example
-
-```python
-cf = df({"x": [1,2,3,4,5]})
-cf.mutate(
-    double="x * 2",
-    lag_x=lag("x", 1),
-    roll3=rolling_mean("x", 3),
-).to_pandas()
-```
-
-**Output**
-
-```
-   x  double  lag_x  roll3
-0  1       2    NaN    NaN
-1  2       4    1.0    NaN
-2  3       6    2.0    2.0
-3  4       8    3.0    3.0
-4  5      10    4.0    4.0
-```
-
----
-
-## 🔗 Pipe Syntax (>>) + group_by() → summarise()
-
-*(From `test_groupby_summarise_pipe.py`)*
-
-Yes — **you can actually do tidyverse pipes in Python**.
-
-### Example
-
-```python
-cf = df({"user_id": [1,2,1], "score":[5,7,9]})
-
-result = (
-    cf
-    >> pipe.group_by("user_id")
-    >> pipe.summarise(
-        mean_score=("score", "mean"),
-        n=("score", "count"),
-    )
-).to_pandas()
-result
-```
-
-**Output**
-
-```
-   user_id  mean_score  n
-0        1         7.0  2
-1        2         7.0  1
-```
-
----
-
-## 🔢 count(), Proportions, Row Counting
-
-*(From `test_count_prop.py`)*
-
-`count()`:
-
-* with no arguments → counts rows
-* with columns → frequency tables
-* add `prop=True` for proportions
-
-### Example
-
-```python
-cf = df({"grp":[1,1,2,2,2]})
-cf.count("grp", prop=True, sort=True).to_pandas()
-```
-
-**Output**
-
-```
-   grp  n  prop
-0    2  3  0.60
-1    1  2  0.40
-```
-
----
-
-## ✂️ slice(), head(), tail()
-
-*(From `test_slice.py`)*
-
-### Example
-
-```python
-cf = df({"x":[10,20,30,40]})
-cf.slice(1,3).to_pandas()
-```
-
-**Output**
-
-```
-    x
-1  20
-2  30
-```
-
----
-
-## 🔄 pivot_longer() and pivot_wider()
-
-*(From `test_pivot_longer_wider_basic.py`, `test_tidyr.py`)*
-
-### pivot_longer
-
-```python
-cf = df({
-    "id":[1,2],
-    "year_2023":[10,30],
-    "year_2024":[11,31],
+sales = df({
+    "team":  ["a", "a", "b", "b", "b"],
+    "score": [10.0, 30.0, 5.0, None, 25.0],
 })
 
-cf.pivot_longer(
-    col.matches("^year_"),
-    names_to="year",
-    values_to="value",
-).to_pandas()
+out = (
+    sales
+    >> pipe.drop_na("score")
+    >> pipe.group_by("team")
+    >> pipe.mutate(share="score / sum(score)")      # per-team, because the frame is grouped
+    >> pipe.summarise(avg=mean(col.score), rows=n())
+    >> pipe.arrange(desc(col.avg))
+)
+out.to_polars()
+# team  avg   rows
+# a     20.0  2
+# b     15.0  2
 ```
 
-**Output**
+## Status
 
-```
-   id       year  value
-0   1  year_2023     10
-1   2  year_2023     30
-2   1  year_2024     11
-3   2  year_2024     31
-```
+Alpha (0.2.x). The API is still moving.
 
-### pivot_wider
+- **Engine:** Polars, through its Python API. Tested on Polars 1.17 and 1.23;
+  Polars 2.x is not yet supported (`polars>=1.17,<2`).
+- **Tests:** 118, run on both Polars versions.
+- **Rust:** the `src/` extension is not used. Earlier versions of this README
+  described a Rust core; the speed comes from Polars' own Rust engine. The
+  build backend is still maturin, so installing from source needs a Rust
+  toolchain for now.
+- **Old implementation:** the previous pandas-backed code is kept as
+  `crowley_frame.legacy` for benchmarking only.
 
-```python
-long = cf.pivot_longer(...)
+## Install
 
-long.pivot_wider(names_from="year", values_from="value").to_pandas()
-```
-
-**Output**
-
-```
-   id  year_2023  year_2024
-0   1         10         11
-1   2         30         31
-```
-
----
-
-## 🔬 separate() & unite() with Proper NA Semantics
-
-*(From `test_separate_unite.py`)*
-
-### unite()
-
-```python
-cf = df({
-    "first":["Ada", None, "Charlie"],
-    "last":["Lovelace", "Smith", None],
-})
-
-cf.unite("full", ["first","last"], sep=" ").to_pandas()
-```
-
-**Output**
-
-```
-          full
-0  Ada Lovelace
-1          <NA>
-2          <NA>
-```
-
-### separate()
-
-```python
-cf = df({"full":["Ada Lovelace", "John Smith"]})
-cf.separate("full", into=["first","last"], sep=" ").to_pandas()
-```
-
-**Output**
-
-```
-    first     last
-0     Ada  Lovelace
-1    John     Smith
-```
-
----
-
-# 📥 Installation
-
-### For contributors (local dev)
+From a checkout:
 
 ```bash
-maturin develop --release
+pip install -e .
 ```
 
-### Future PyPI install
+Requires Python 3.8+, `polars`, and (for `to_pandas()` / `to_arrow()`) `pandas` and `pyarrow`.
+
+## Core ideas
+
+### Frames are lazy
+
+`df()` accepts a dict, a Polars `DataFrame`/`LazyFrame`, a pandas `DataFrame`
+or a PyArrow table. Every verb returns a new `Frame` holding a longer plan.
+
+These run the plan:
+
+| Call | Returns |
+|---|---|
+| `collect()` | a `Frame` over the computed result |
+| `to_polars()`, `to_pandas()`, `to_arrow()` | the data |
+| `pull("col")` | one column as a Polars Series |
+| `glimpse()`, printing a frame | a preview of the first rows |
+| `pivot_wider()` | runs the plan so far (its output columns depend on the data), then continues lazily |
+
+`explain()` shows the Polars plan without running it.
+
+### Two ways to write an expression
+
+```python
+cf.mutate(r=col.x / cr.sum(col.x), big=(col.x > 2) & ~cr.is_na(col.y))   # column objects
+cf.mutate(r="x / sum(x)", big="x > 2 and not is_na(y)")                   # strings
+```
+
+Both compile to the same Polars expression. Strings are parsed against a
+whitelist and never evaluated: bare names are columns, quoted text and numbers
+are literals, and only crowley-frame functions can be called. Anything else
+raises `CrowleyTranslationError`.
+
+On a grouped frame, aggregates and window functions in `mutate` and `filter`
+are computed per group. In `summarise` they are plain aggregates.
+
+`sum`, `min`, `max`, `abs`, `round`, `any` and `all` are available as
+`cr.sum` etc.; they are left out of `from crowley_frame import *` so they do
+not shadow Python's builtins.
+
+### Method chaining or pipes
+
+Every verb is a `Frame` method and is also available as `pipe.<verb>(...)` for `>>`:
+
+```python
+cf.filter("x > 0").arrange("-x")
+cf >> pipe.filter("x > 0") >> pipe.arrange("-x")
+```
+
+### Ordering modes
+
+| Mode | Behaviour |
+|---|---|
+| `order="dplyr"` (default) | Keeps the row order dplyr users see: `summarise`/`count` sorted by group keys, stable `arrange`, `distinct` keeps first occurrences in place, joins keep left row order, `pivot_longer` returns rows in input order. |
+| `order="fast"` | Emits the plain Polars plan with no ordering guarantees beyond what the verb asks for. |
+
+Set it per frame with `df(data, order="fast")` or `cf.with_order("fast")`, or
+globally with `cr.set_order("fast")`. The only large measured cost of dplyr
+mode is `pivot_longer` (about 3x to 4x).
+
+### Errors instead of slow fallbacks
+
+There is no pandas fallback and no hidden Python-per-row path. Unknown columns
+raise `ColumnNotFoundError` (a `KeyError`) with a suggestion; anything that
+cannot be expressed as a lazy Polars plan raises `CrowleyTranslationError`;
+failed data checks raise `CrowleyValidationError`.
+
+## Verbs
+
+| Area | Verbs |
+|---|---|
+| Rows | `filter`, `arrange`, `distinct`, `slice_head`, `slice_tail`, `slice_min`, `slice_max`, `slice_sample` |
+| Columns | `select`, `mutate`, `transmute`, `rename`, `rename_with`, `relocate`, `pull`, `glimpse` |
+| Groups | `group_by`, `ungroup`, `summarise` / `summarize`, `count`, `add_count` |
+| Joins | `left_join`, `inner_join`, `right_join`, `full_join`, `semi_join`, `anti_join`, `cross_join` |
+| Reshaping | `pivot_longer`, `pivot_wider`, `separate`, `unite` |
+| Missing values | `drop_na`, `replace_na`, `fill`, `drop_missing`, `replace_missing` |
+
+### Selecting columns
+
+```python
+from crowley_frame import starts_with, ends_with, contains, matches, everything, last_col
+from crowley_frame import all_of, any_of, num_range, where, is_numeric, is_string
+
+cf.select("id", starts_with("score"))
+cf.select(where(is_numeric) & ~starts_with("tmp_"))
+cf.select(num_range("wk", range(1, 5)))
+```
+
+Selectors combine with `~`, `|`, `&` and `-`, and are resolved from the schema
+only. `where()` takes a predicate on the column's dtype, not its values.
+
+### Expression functions
+
+- **Summaries:** `mean`, `median`, `sd`, `var`, `first`, `last`, `n`, `n_distinct`, plus `cr.sum`, `cr.min`, `cr.max`, `cr.any`, `cr.all`
+- **Windows:** `lag`, `lead`, `cumsum`, `rolling_mean`, `row_number`, `min_rank`, `dense_rank`, `percent_rank`
+- **Values:** `if_else`, `case_when`, `coalesce`, `na_if`, `between`, `near`, `is_na`, `not_na`, `is_in`, `lit`, plus `cr.abs`, `cr.round`, `sqrt`, `exp`, `log`, `floor`, `ceiling`
+- **Several columns at once:** `across`, `pick`
+
+```python
+from crowley_frame import across, case_when, sd
+
+cf.group_by("team").summarise(across(where(is_numeric), {"mean": mean, "sd": sd}))   # score_mean, score_sd
+cf.mutate(band=case_when((col.score < 10, "low"), (col.score < 20, "mid"), _default="high"))
+```
+
+## Workflow helpers
+
+Beyond the verbs: checks and tooling for pipelines that have to be trusted.
+
+| Area | Helpers |
+|---|---|
+| Inspection | `profile`, `profile_by`, `profile_diff`, `compare_schema`, `explain_plan`, `explain_expr`, `resolve_columns`, `audit`, `track_lineage` / `lineage` |
+| Validation | `validate`, `validate_bounds`, `validate_categories`, `expect` / `assert_expectations` / `clear_expectations` |
+| Joins | `check_keys`, `validate_relationship`, `join_diagnostics`, `safe_join` |
+| Data quality | `partition_valid`, `normalize_names`, `normalize_values`, `detect_anomalies`, `detect_drift` |
+| Reproducibility | `fingerprint_rows`, `snapshot` / `restore_snapshot`, `branch`, `define_pipeline`, `collect_all`, `compare_outputs` |
+
+```python
+orders = df({"cust": [1, 1, 2, 9], "amount": [10.0, 20.0, -5.0, 40.0]})
+customers = df({"cust": [1, 2, 3], "name": ["Ada", "Bo", "Cy"]})
+
+# Fail early, with counts, if the join would not behave as assumed
+orders.safe_join(customers, by="cust", relationship="many-to-one", unmatched="error")
+# CrowleyValidationError: safe_join(): 1 of 4 left rows have no match in the right frame
+
+# Assert facts and keep going; all data rules run in one pass
+checked = orders.validate(not_null=["cust"], ranges={"amount": (0, None)}, on_fail="report")
+checked.ok          # False: one amount is out of range
+
+# Quarantine bad rows instead of failing
+valid, invalid = orders.partition_valid(ranges={"amount": (0, None)})
+invalid.to_polars() # the -5.0 row, with failed_checks = "range(amount)"
+```
+
+Helpers that need the data run one aggregation query and never pull rows into
+Python; helpers that only need the schema read no data. Which is which, with
+limitations per function, is in [docs/workflow-helpers.md](docs/workflow-helpers.md).
+
+## Performance
+
+Benchmarks compare hand-written Polars lazy queries, the old pandas
+implementation, and this implementation in both ordering modes, on generated
+data from 100k to 15M rows. Results are checked for equality before timing.
+
+- **Against the old implementation:** faster on all 12 benchmark queries it
+  can run, at every size. On a five-verb pipeline at 15M rows it uses about
+  0.5 GB of extra memory against 1.6 GB.
+- **Against raw Polars:** `order="fast"` is within 10% on 16 to 18 of 22
+  queries by median, and 16 of 22 produce a plan identical to the hand-written
+  one. Where the plan differs it is for a stated reason (for example, counts
+  are returned as signed 64-bit integers).
+- **Caveat:** timings on the development machine vary by 20% or more between
+  runs, including for identical plans, so they cannot confirm single-digit
+  overhead per query. Plan identity is the firmer evidence.
+- **Building a plan** costs up to about 5x raw Polars, under half a
+  millisecond for a ten-verb pipeline. It only matters on very small data.
+
+Full tables: [benchmarks/REPORT.md](benchmarks/REPORT.md) (verbs) and
+[benchmarks/WORKFLOW_REPORT.md](benchmarks/WORKFLOW_REPORT.md) (workflow helpers).
 
 ```bash
-pip install crowley-frame
+python benchmarks/ab_bench.py --with-15m
 ```
 
----
-
-# 🚀 Usage Overview
-
-### Create a DataFrame
-
-```python
-from crowley_frame import df, col, pipe
-cf = df({"x":[1,2,3], "y":[10,20,30]})
+```bash
+python benchmarks/workflow_bench.py --with-15m
 ```
 
-### Select columns
+## Differences from dplyr and tidyr
 
-```python
-cf.select(col.starts_with("y")).to_pandas()
+- Aggregates skip missing values by default (`mean(x)` is R's `mean(x, na.rm = TRUE)`); pass `na_rm=False` for R's behaviour.
+- `NaN` is not treated as missing. pandas `NaN` becomes a missing value on the way in.
+- R's dot-arguments use an underscore or a plain name: `_names`, `_default`, `keep_all`, `before`, `after`.
+- `case_when` takes `(condition, value)` tuples.
+- `summarise` always returns an ungrouped frame.
+- `slice_head` and `slice_tail` default to 5 rows.
+- `unite` gives a missing result if any part is missing, unless `na_rm=True`.
+
+Not available yet: `rowwise`, `if_any` / `if_all`, inequality and rolling
+joins, per-verb `.by`, `nest` / `unnest`, `complete` / `expand`, the
+`separate_wider_*` family, and stringr / lubridate / forcats helpers. The full
+list with reasons is in [docs/lazy-backend-notes.md](docs/lazy-backend-notes.md).
+
+## Development
+
+```bash
+python -m pytest
 ```
 
-Output:
+Tests cover each verb against literal expected output or the equivalent
+Polars query, check that lazy verbs do not execute the plan, and check that
+untranslatable input raises rather than falling back.
 
-```
-    y
-0  10
-1  20
-2  30
-```
+## License
 
-### Mutate
-
-```python
-cf.mutate(z="x + y").to_pandas()
-```
-
-Output:
-
-```
-   x   y   z
-0  1  10  11
-1  2  20  22
-2  3  30  33
-```
-
-### Group + summarise with pipes
-
-```python
-cf >> pipe.group_by("x") >> pipe.summarise(sum_y=("y","sum"))
-```
-
-Output:
-
-```
-   x  sum_y
-0  1     10
-1  2     20
-2  3     30
-```
-
-### Reshape: pivot_longer
-
-```python
-cf.pivot_longer(col.starts_with("y"), names_to="year", values_to="value")
-```
-
-Output:
-
-```
-   x  year  value
-0  1     y1     10
-1  1     y2     20
-```
-
----
-
-# 🧭 Roadmap (Next Milestones)
-
-* More window functions (rolling_sum, rolling_sd, rolling_min/max)
-* Lazy backend (like dplyr/dbplyr or polars-lazy)
-* More expressive mutate expression engine
-* Arrow-native memory and zero-copy interfaces
-* SIMD and GPU-accelerated Rust kernels
-* Better type inference + schema evolution
-
----
-
-# 📄 License
-
-MIT License — free to use, modify, and distribute.
-
----
-
-
-
-
-Tidyverse-style data manipulation for Python, powered by Rust and Polars.
+MIT

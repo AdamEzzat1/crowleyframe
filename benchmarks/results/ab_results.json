@@ -1,0 +1,3308 @@
+{
+  "environment": {
+    "python": "3.11.3",
+    "polars": "1.23.0",
+    "pandas": "2.3.2",
+    "numpy": "2.2.6",
+    "os": "Windows-10-10.0.26200-SP0",
+    "cpu": "Intel64 Family 6 Model 140 Stepping 2, GenuineIntel",
+    "logical_cpus": 8,
+    "polars_threads": 8,
+    "ram_gb": 31.8
+  },
+  "reps": 7,
+  "queries": [
+    "select",
+    "filter_mutate",
+    "group_mean",
+    "arrange",
+    "join",
+    "pipeline",
+    "distinct",
+    "count",
+    "add_count",
+    "transmute",
+    "relocate",
+    "slice_min",
+    "slice_max",
+    "drop_na",
+    "replace_na",
+    "fill",
+    "pivot_longer",
+    "semi_join",
+    "anti_join",
+    "across_mutate",
+    "across_summarise",
+    "long_pipeline"
+  ],
+  "sizes": {
+    "100000": {
+      "validation": {
+        "select": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "filter_mutate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "group_mean": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "arrange": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "join": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "pipeline": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "distinct": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "count": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "add_count": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "transmute": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "relocate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_min": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_max": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "drop_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "replace_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "fill": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "pivot_longer": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "semi_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "anti_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_mutate": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_summarise": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "long_pipeline": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        }
+      },
+      "end_to_end": {
+        "select": {
+          "raw_polars": {
+            "median": 0.0002528000040911138,
+            "min": 0.00015320000238716602,
+            "max": 0.00029830000130459666,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.008879599976353347,
+            "min": 0.006205199984833598,
+            "max": 0.019347299996297807,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.00021010002819821239,
+            "min": 0.00017850002041086555,
+            "max": 0.0003826000029221177,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0002606000052765012,
+            "min": 0.00017870002193376422,
+            "max": 0.0003155000158585608,
+            "reps": 7
+          }
+        },
+        "filter_mutate": {
+          "raw_polars": {
+            "median": 0.0016330999787896872,
+            "min": 0.0012876999680884182,
+            "max": 0.0033124000183306634,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.03213930001948029,
+            "min": 0.02403750002849847,
+            "max": 0.04006570001365617,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0023610000498592854,
+            "min": 0.001457099977415055,
+            "max": 0.0034770999918691814,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.002165100013371557,
+            "min": 0.0016751000075601041,
+            "max": 0.003652100043836981,
+            "reps": 7
+          }
+        },
+        "group_mean": {
+          "raw_polars": {
+            "median": 0.0023591999779455364,
+            "min": 0.0021240999922156334,
+            "max": 0.01636150002013892,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.01985660003265366,
+            "min": 0.015078900032676756,
+            "max": 0.028617700038012117,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.003883600002154708,
+            "min": 0.0019367000204510987,
+            "max": 0.016744600026868284,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0029598999535664916,
+            "min": 0.0024073999957181513,
+            "max": 0.01042609999421984,
+            "reps": 7
+          }
+        },
+        "arrange": {
+          "raw_polars": {
+            "median": 0.015297400008421391,
+            "min": 0.012802000041119754,
+            "max": 0.017108400003053248,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.04101420001825318,
+            "min": 0.03350530000170693,
+            "max": 0.04627099999925122,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.012432399962563068,
+            "min": 0.010188599990215153,
+            "max": 0.014242300007026643,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.011450399993918836,
+            "min": 0.00941270001931116,
+            "max": 0.01712590001989156,
+            "reps": 7
+          }
+        },
+        "join": {
+          "raw_polars": {
+            "median": 0.006897799961734563,
+            "min": 0.005530099966563284,
+            "max": 0.010398900019936264,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.07257530000060797,
+            "min": 0.048818100010976195,
+            "max": 0.12383120000595227,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.007248600013554096,
+            "min": 0.006708700035233051,
+            "max": 0.009984800009988248,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.007052199973259121,
+            "min": 0.00535739999031648,
+            "max": 0.009223899978678674,
+            "reps": 7
+          }
+        },
+        "pipeline": {
+          "raw_polars": {
+            "median": 0.004395199997816235,
+            "min": 0.0028025999781675637,
+            "max": 0.006084199994802475,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.04274720000103116,
+            "min": 0.041530299989972264,
+            "max": 0.06759799999417737,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0036678999895229936,
+            "min": 0.0027139000012539327,
+            "max": 0.004968799999915063,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.004177499969955534,
+            "min": 0.0034189000143669546,
+            "max": 0.006056800018996,
+            "reps": 7
+          }
+        },
+        "distinct": {
+          "raw_polars": {
+            "median": 0.012090100033674389,
+            "min": 0.010779300006106496,
+            "max": 0.015819600026588887,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.04744850000133738,
+            "min": 0.034103000012692064,
+            "max": 0.06020030000945553,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.012798400013707578,
+            "min": 0.008406400040257722,
+            "max": 0.015095000038854778,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.016613000014331192,
+            "min": 0.01238009997177869,
+            "max": 0.019511800026521087,
+            "reps": 7
+          }
+        },
+        "count": {
+          "raw_polars": {
+            "median": 0.004747600003611296,
+            "min": 0.0038077000062912703,
+            "max": 0.00793850002810359,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.02415309997741133,
+            "min": 0.020664900017436594,
+            "max": 0.0388956000097096,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.004269600030966103,
+            "min": 0.0033387999865226448,
+            "max": 0.006371299969032407,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.004681399965193123,
+            "min": 0.002651000046171248,
+            "max": 0.008311399957165122,
+            "reps": 7
+          }
+        },
+        "add_count": {
+          "raw_polars": {
+            "median": 0.003964999981690198,
+            "min": 0.003158200008329004,
+            "max": 0.00597090000519529,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.003832200018223375,
+            "min": 0.0030968000064603984,
+            "max": 0.004780499963089824,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.004113500006496906,
+            "min": 0.002500700007658452,
+            "max": 0.005042399978265166,
+            "reps": 7
+          }
+        },
+        "transmute": {
+          "raw_polars": {
+            "median": 0.00129650003509596,
+            "min": 0.0006831000209785998,
+            "max": 0.0019103999948129058,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0009441000293008983,
+            "min": 0.0007138000219129026,
+            "max": 0.0016556999762542546,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.001553200010675937,
+            "min": 0.0008314999868161976,
+            "max": 0.0018088000360876322,
+            "reps": 7
+          }
+        },
+        "relocate": {
+          "raw_polars": {
+            "median": 0.00025049998657777905,
+            "min": 0.00015109998639672995,
+            "max": 0.00045059999683871865,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.01671080000232905,
+            "min": 0.011619199998676777,
+            "max": 0.02417689998401329,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.00036320002982392907,
+            "min": 0.0001689000055193901,
+            "max": 0.0004955999902449548,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.00034550001146271825,
+            "min": 0.00026380002964287996,
+            "max": 0.0004846000229008496,
+            "reps": 7
+          }
+        },
+        "slice_min": {
+          "raw_polars": {
+            "median": 0.0031827999628148973,
+            "min": 0.002770199964288622,
+            "max": 0.0048479000106453896,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.01425589999416843,
+            "min": 0.011332600028254092,
+            "max": 0.02317379997111857,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0007969000143930316,
+            "min": 0.0006393000367097557,
+            "max": 0.001280799973756075,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0009594999719411135,
+            "min": 0.0007264000014401972,
+            "max": 0.00131280004279688,
+            "reps": 7
+          }
+        },
+        "slice_max": {
+          "raw_polars": {
+            "median": 0.0031968000112101436,
+            "min": 0.003098800021689385,
+            "max": 0.00858439999865368,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.014125399990007281,
+            "min": 0.013212699966970831,
+            "max": 0.01570319995516911,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0011742999777197838,
+            "min": 0.0008407999994233251,
+            "max": 0.0013543000095523894,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0009534999844618142,
+            "min": 0.0007674999651499093,
+            "max": 0.0012650000280700624,
+            "reps": 7
+          }
+        },
+        "drop_na": {
+          "raw_polars": {
+            "median": 0.0019428000086918473,
+            "min": 0.0012756999931298196,
+            "max": 0.0024378999951295555,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.001718499988783151,
+            "min": 0.0013031000271439552,
+            "max": 0.0024618000024929643,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0016075000166893005,
+            "min": 0.001067899982444942,
+            "max": 0.0020457999780774117,
+            "reps": 7
+          }
+        },
+        "replace_na": {
+          "raw_polars": {
+            "median": 0.0010526999831199646,
+            "min": 0.0008055000216700137,
+            "max": 0.0012088000075891614,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0008293999708257616,
+            "min": 0.0007297999691218138,
+            "max": 0.0014079000102356076,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0007177999941632152,
+            "min": 0.0005493999924510717,
+            "max": 0.0013264999724924564,
+            "reps": 7
+          }
+        },
+        "fill": {
+          "raw_polars": {
+            "median": 0.001013199973385781,
+            "min": 0.0007691000355407596,
+            "max": 0.0013528999988920987,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0009017999982461333,
+            "min": 0.0006564999930560589,
+            "max": 0.0011092000058852136,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0009313999908044934,
+            "min": 0.0006871999939903617,
+            "max": 0.0011275000288151205,
+            "reps": 7
+          }
+        },
+        "pivot_longer": {
+          "raw_polars": {
+            "median": 0.0013676999951712787,
+            "min": 0.0009175000013783574,
+            "max": 0.002241100009996444,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.025486099999397993,
+            "min": 0.024629499996080995,
+            "max": 0.034209399949759245,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0013343000318855047,
+            "min": 0.0012576999724842608,
+            "max": 0.0019447000231593847,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.003726599970832467,
+            "min": 0.0029017000342719257,
+            "max": 0.004248799988999963,
+            "reps": 7
+          }
+        },
+        "semi_join": {
+          "raw_polars": {
+            "median": 0.004321000014897436,
+            "min": 0.003180400002747774,
+            "max": 0.0050416000303812325,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0038887999835424125,
+            "min": 0.0032694999827072024,
+            "max": 0.005353299959097058,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0036236000014469028,
+            "min": 0.0015465000178664923,
+            "max": 0.005931299994699657,
+            "reps": 7
+          }
+        },
+        "anti_join": {
+          "raw_polars": {
+            "median": 0.004333999997470528,
+            "min": 0.0033944000024348497,
+            "max": 0.006006099982187152,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.003957100037951022,
+            "min": 0.002938700024969876,
+            "max": 0.0055698000360280275,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0046719000092707574,
+            "min": 0.002833200036548078,
+            "max": 0.006560100009664893,
+            "reps": 7
+          }
+        },
+        "across_mutate": {
+          "raw_polars": {
+            "median": 0.0011320000048726797,
+            "min": 0.0008111000061035156,
+            "max": 0.0019177999929524958,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0011888000299222767,
+            "min": 0.0009969000238925219,
+            "max": 0.001595200039446354,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0011831000447273254,
+            "min": 0.000617499987129122,
+            "max": 0.0019060000195167959,
+            "reps": 7
+          }
+        },
+        "across_summarise": {
+          "raw_polars": {
+            "median": 0.004354799981229007,
+            "min": 0.003562099998816848,
+            "max": 0.006931799987796694,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.004907299997285008,
+            "min": 0.0033777999924495816,
+            "max": 0.006440400029532611,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.004920199979096651,
+            "min": 0.0038776000146754086,
+            "max": 0.006275799998547882,
+            "reps": 7
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "median": 0.014642900030594319,
+            "min": 0.012497899995651096,
+            "max": 0.01856019999831915,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.014750400034245104,
+            "min": 0.012220800039358437,
+            "max": 0.022102300019469112,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.016492400027345866,
+            "min": 0.011083399993367493,
+            "max": 0.02377839997643605,
+            "reps": 7
+          }
+        }
+      },
+      "memory": {
+        "pipeline": {
+          "raw_polars": {
+            "baseline_mb": 106.0546875,
+            "extra_peak_mb": 9.06640625
+          },
+          "legacy": {
+            "baseline_mb": 119.87109375,
+            "extra_peak_mb": 9.5625
+          },
+          "new_fast": {
+            "baseline_mb": 106.3671875,
+            "extra_peak_mb": 9.203125
+          },
+          "new_dplyr": {
+            "baseline_mb": 105.87890625,
+            "extra_peak_mb": 9.2734375
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "baseline_mb": 106.1640625,
+            "extra_peak_mb": 25.0625
+          },
+          "new_fast": {
+            "baseline_mb": 106.21484375,
+            "extra_peak_mb": 24.83984375
+          },
+          "new_dplyr": {
+            "baseline_mb": 106.22265625,
+            "extra_peak_mb": 22.96875
+          }
+        }
+      }
+    },
+    "1000000": {
+      "validation": {
+        "select": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "filter_mutate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "group_mean": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "arrange": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "join": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "pipeline": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "distinct": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "count": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "add_count": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "transmute": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "relocate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_min": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_max": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "drop_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "replace_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "fill": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "pivot_longer": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "semi_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "anti_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_mutate": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_summarise": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "long_pipeline": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        }
+      },
+      "end_to_end": {
+        "select": {
+          "raw_polars": {
+            "median": 0.00014720001490786672,
+            "min": 0.00014379998901858926,
+            "max": 0.00019649998284876347,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.06464399996912107,
+            "min": 0.06377760000759736,
+            "max": 0.07408979994943365,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0001547999563626945,
+            "min": 0.00012589996913447976,
+            "max": 0.00018350000027567148,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.00015569996321573853,
+            "min": 0.00013420003233477473,
+            "max": 0.00023060000967234373,
+            "reps": 7
+          }
+        },
+        "filter_mutate": {
+          "raw_polars": {
+            "median": 0.008813299995381385,
+            "min": 0.007106799981556833,
+            "max": 0.011763399990741163,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.2007699000532739,
+            "min": 0.18098060000920668,
+            "max": 0.27072740002768114,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.008296400017570704,
+            "min": 0.006535599997732788,
+            "max": 0.010589400015305728,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.008350900025106966,
+            "min": 0.006416000018361956,
+            "max": 0.01387669995892793,
+            "reps": 7
+          }
+        },
+        "group_mean": {
+          "raw_polars": {
+            "median": 0.018009899999015033,
+            "min": 0.009784800000488758,
+            "max": 0.02389359998051077,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.1825364999822341,
+            "min": 0.15096390002872795,
+            "max": 0.2206787999602966,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.018302700016647577,
+            "min": 0.013548299961257726,
+            "max": 0.0313632000470534,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.01576410001143813,
+            "min": 0.012137799989432096,
+            "max": 0.040117999946232885,
+            "reps": 7
+          }
+        },
+        "arrange": {
+          "raw_polars": {
+            "median": 0.1950024000252597,
+            "min": 0.16392620000988245,
+            "max": 0.3063261000206694,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.40018070000223815,
+            "min": 0.366561200004071,
+            "max": 0.5976451999740675,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.14862569997785613,
+            "min": 0.13391460001002997,
+            "max": 0.23791959998197854,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.13812880002660677,
+            "min": 0.12520609999774024,
+            "max": 0.21895440004300326,
+            "reps": 7
+          }
+        },
+        "join": {
+          "raw_polars": {
+            "median": 0.028919900010805577,
+            "min": 0.026269799971487373,
+            "max": 0.0419172000256367,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.6787240999983624,
+            "min": 0.5701882999856025,
+            "max": 0.7015397000359371,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.03567269997438416,
+            "min": 0.027211499982513487,
+            "max": 0.050426999980118126,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.032326600048691034,
+            "min": 0.022446499962825328,
+            "max": 0.04351599997607991,
+            "reps": 7
+          }
+        },
+        "pipeline": {
+          "raw_polars": {
+            "median": 0.016027800040319562,
+            "min": 0.01275349996285513,
+            "max": 0.024340700008906424,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.39376459998311475,
+            "min": 0.3509884000523016,
+            "max": 0.43463859998155385,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.015589100017677993,
+            "min": 0.011867999972309917,
+            "max": 0.02859770000213757,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.016183899948373437,
+            "min": 0.012067199975717813,
+            "max": 0.02131139999255538,
+            "reps": 7
+          }
+        },
+        "distinct": {
+          "raw_polars": {
+            "median": 0.06757379998452961,
+            "min": 0.044875399966258556,
+            "max": 0.11553160002222285,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.3732694999780506,
+            "min": 0.2731472000014037,
+            "max": 0.41268959996523336,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.06696890003513545,
+            "min": 0.05681340000592172,
+            "max": 0.07272449997253716,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.07833869999740273,
+            "min": 0.06182910001371056,
+            "max": 0.1088105000089854,
+            "reps": 7
+          }
+        },
+        "count": {
+          "raw_polars": {
+            "median": 0.0127445999532938,
+            "min": 0.009305699961259961,
+            "max": 0.01956899999640882,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.19827880000229925,
+            "min": 0.14561150001827627,
+            "max": 0.34502929996233433,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.011918700009118766,
+            "min": 0.010333599988371134,
+            "max": 0.020012799999676645,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.015426800004206598,
+            "min": 0.008314899983815849,
+            "max": 0.022556199983227998,
+            "reps": 7
+          }
+        },
+        "add_count": {
+          "raw_polars": {
+            "median": 0.03276520001236349,
+            "min": 0.02481659996556118,
+            "max": 0.037881100026424974,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.03333559999009594,
+            "min": 0.021150299988221377,
+            "max": 0.042545100033748895,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0287683000206016,
+            "min": 0.018544699996709824,
+            "max": 0.0349114999989979,
+            "reps": 7
+          }
+        },
+        "transmute": {
+          "raw_polars": {
+            "median": 0.008370900002773851,
+            "min": 0.004814699990674853,
+            "max": 0.014464500010944903,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.004558400018140674,
+            "min": 0.0033153999829664826,
+            "max": 0.007321899989619851,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.003827999986242503,
+            "min": 0.0027875000378116965,
+            "max": 0.010736600030213594,
+            "reps": 7
+          }
+        },
+        "relocate": {
+          "raw_polars": {
+            "median": 0.0002577000414021313,
+            "min": 0.00016499997582286596,
+            "max": 0.0004463999648578465,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.1671286000055261,
+            "min": 0.14458650001324713,
+            "max": 0.18606940004974604,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0002639999729581177,
+            "min": 0.00023289996897801757,
+            "max": 0.00040439999429509044,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.00027060002321377397,
+            "min": 0.00020209996728226542,
+            "max": 0.0003705999697558582,
+            "reps": 7
+          }
+        },
+        "slice_min": {
+          "raw_polars": {
+            "median": 0.0492575999815017,
+            "min": 0.0406141999992542,
+            "max": 0.0618982000160031,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.18352030002279207,
+            "min": 0.13345220003975555,
+            "max": 0.2042160999844782,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0062052999855950475,
+            "min": 0.005306700011715293,
+            "max": 0.01086310000391677,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.005853999988175929,
+            "min": 0.004542800015769899,
+            "max": 0.009350100008305162,
+            "reps": 7
+          }
+        },
+        "slice_max": {
+          "raw_polars": {
+            "median": 0.06759309995686635,
+            "min": 0.0507408999837935,
+            "max": 0.10966389998793602,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.2186941999825649,
+            "min": 0.17276009998749942,
+            "max": 0.2572001999942586,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.007911599997896701,
+            "min": 0.005449599993880838,
+            "max": 0.010469699976965785,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.007753900019451976,
+            "min": 0.005196500045713037,
+            "max": 0.012185800005681813,
+            "reps": 7
+          }
+        },
+        "drop_na": {
+          "raw_polars": {
+            "median": 0.010196599992923439,
+            "min": 0.008647400012705475,
+            "max": 0.023984999977983534,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.017682600009720773,
+            "min": 0.01108680001925677,
+            "max": 0.01993799995398149,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.011434499989263713,
+            "min": 0.008537899993825704,
+            "max": 0.01415230002021417,
+            "reps": 7
+          }
+        },
+        "replace_na": {
+          "raw_polars": {
+            "median": 0.0044652000069618225,
+            "min": 0.0022419000160880387,
+            "max": 0.007358200033195317,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.004312400007620454,
+            "min": 0.0023182000149972737,
+            "max": 0.008624099951703101,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.005688300007022917,
+            "min": 0.0024545000051148236,
+            "max": 0.007193299999926239,
+            "reps": 7
+          }
+        },
+        "fill": {
+          "raw_polars": {
+            "median": 0.007578000018838793,
+            "min": 0.005909700004849583,
+            "max": 0.009191000019200146,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.008395600016228855,
+            "min": 0.006618000043090433,
+            "max": 0.015672100009396672,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.007428899989463389,
+            "min": 0.005258299992419779,
+            "max": 0.011856900004204363,
+            "reps": 7
+          }
+        },
+        "pivot_longer": {
+          "raw_polars": {
+            "median": 0.012665399990510195,
+            "min": 0.010750800021924078,
+            "max": 0.014030100021045655,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.2977919999975711,
+            "min": 0.24362389999441803,
+            "max": 0.3488787999958731,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.011082899989560246,
+            "min": 0.006674999953247607,
+            "max": 0.01663420000113547,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.044890500023029745,
+            "min": 0.042027899995446205,
+            "max": 0.06885939999483526,
+            "reps": 7
+          }
+        },
+        "semi_join": {
+          "raw_polars": {
+            "median": 0.04757449997123331,
+            "min": 0.025452000030782074,
+            "max": 0.5106771999853663,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.060945100034587085,
+            "min": 0.027607500029262155,
+            "max": 0.19071100000292063,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.08198020001873374,
+            "min": 0.028121999988798052,
+            "max": 0.33479809999698773,
+            "reps": 7
+          }
+        },
+        "anti_join": {
+          "raw_polars": {
+            "median": 0.03182229999219999,
+            "min": 0.02477540000109002,
+            "max": 0.05781080003362149,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.029853900021407753,
+            "min": 0.025731400004588068,
+            "max": 0.13013499998487532,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.037610900006257,
+            "min": 0.026206300011835992,
+            "max": 0.06392939999932423,
+            "reps": 7
+          }
+        },
+        "across_mutate": {
+          "raw_polars": {
+            "median": 0.006592099962290376,
+            "min": 0.003949200036004186,
+            "max": 0.009718299959786236,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.006589500000700355,
+            "min": 0.0032935000490397215,
+            "max": 0.009139400033745915,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.007470400014426559,
+            "min": 0.0037325999583117664,
+            "max": 0.009317499992903322,
+            "reps": 7
+          }
+        },
+        "across_summarise": {
+          "raw_polars": {
+            "median": 0.04821899998933077,
+            "min": 0.0377784000011161,
+            "max": 0.06716430000960827,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.04240490001393482,
+            "min": 0.03721739997854456,
+            "max": 0.06258769996929914,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.04695839999476448,
+            "min": 0.03854000003775582,
+            "max": 0.057301699998788536,
+            "reps": 7
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "median": 0.23328700003912672,
+            "min": 0.10809999995399266,
+            "max": 0.3405915999901481,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.2785823000012897,
+            "min": 0.10268970002653077,
+            "max": 0.30258119996869937,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.24957460002042353,
+            "min": 0.1233797000022605,
+            "max": 0.323947400029283,
+            "reps": 7
+          }
+        }
+      },
+      "memory": {
+        "pipeline": {
+          "raw_polars": {
+            "baseline_mb": 154.4375,
+            "extra_peak_mb": 44.39453125
+          },
+          "legacy": {
+            "baseline_mb": 243.20703125,
+            "extra_peak_mb": 102.51953125
+          },
+          "new_fast": {
+            "baseline_mb": 153.91015625,
+            "extra_peak_mb": 38.7890625
+          },
+          "new_dplyr": {
+            "baseline_mb": 154.25390625,
+            "extra_peak_mb": 41.03125
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "baseline_mb": 154.109375,
+            "extra_peak_mb": 118.6484375
+          },
+          "new_fast": {
+            "baseline_mb": 154.5703125,
+            "extra_peak_mb": 117.890625
+          },
+          "new_dplyr": {
+            "baseline_mb": 154.33984375,
+            "extra_peak_mb": 120.734375
+          }
+        }
+      }
+    },
+    "5000000": {
+      "validation": {
+        "select": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "filter_mutate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "group_mean": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "arrange": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "join": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "pipeline": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "distinct": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "count": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "add_count": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "transmute": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "relocate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_min": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_max": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "drop_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "replace_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "fill": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "pivot_longer": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "semi_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "anti_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_mutate": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_summarise": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "long_pipeline": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        }
+      },
+      "end_to_end": {
+        "select": {
+          "raw_polars": {
+            "median": 0.0002728000399656594,
+            "min": 0.00020020001102238894,
+            "max": 0.00036890001501888037,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 0.667303099995479,
+            "min": 0.5394898999948055,
+            "max": 1.5041205000015907,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0002894000499509275,
+            "min": 0.0002432999899610877,
+            "max": 0.0003621999640017748,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.00034279999090358615,
+            "min": 0.00025560002541169524,
+            "max": 0.002968000015243888,
+            "reps": 7
+          }
+        },
+        "filter_mutate": {
+          "raw_polars": {
+            "median": 0.05371949996333569,
+            "min": 0.039246900007128716,
+            "max": 0.10294830001657829,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.4965123000438325,
+            "min": 1.364617899991572,
+            "max": 2.1283718000049703,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.050630200013983995,
+            "min": 0.034695399983320385,
+            "max": 0.08161079999990761,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.048362999979872257,
+            "min": 0.03540630004135892,
+            "max": 0.11720790003892034,
+            "reps": 7
+          }
+        },
+        "group_mean": {
+          "raw_polars": {
+            "median": 0.13740849995519966,
+            "min": 0.09301199996843934,
+            "max": 0.15784060000441968,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.2232958000386134,
+            "min": 1.0501538999960758,
+            "max": 1.612344499968458,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.14767350000329316,
+            "min": 0.07188379997387528,
+            "max": 0.30363369995029643,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.12429400003748015,
+            "min": 0.07772269996348768,
+            "max": 0.1781609000172466,
+            "reps": 7
+          }
+        },
+        "arrange": {
+          "raw_polars": {
+            "median": 2.495941600005608,
+            "min": 1.7071260000229813,
+            "max": 3.584496199968271,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 3.2709930000128224,
+            "min": 2.7438679999904707,
+            "max": 8.270078399975318,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 3.202370500017423,
+            "min": 1.5456876000389457,
+            "max": 4.83110760001,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 2.195109100022819,
+            "min": 1.5666978000081144,
+            "max": 4.302150300005451,
+            "reps": 7
+          }
+        },
+        "join": {
+          "raw_polars": {
+            "median": 0.24918679997790605,
+            "min": 0.12930440000491217,
+            "max": 1.162970800010953,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 5.283184200001415,
+            "min": 3.109227299981285,
+            "max": 7.782502299989574,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.17921259999275208,
+            "min": 0.11409340001409873,
+            "max": 0.560501599975396,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.20701870002085343,
+            "min": 0.12476700003026053,
+            "max": 0.3311406999710016,
+            "reps": 7
+          }
+        },
+        "pipeline": {
+          "raw_polars": {
+            "median": 0.15718440001364797,
+            "min": 0.1008165999664925,
+            "max": 3.563551399973221,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 3.1875570999691263,
+            "min": 2.2859034999855794,
+            "max": 12.56509259995073,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.10396470001433045,
+            "min": 0.09441610000794753,
+            "max": 1.7914469999959692,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.1185463999863714,
+            "min": 0.10056439996697009,
+            "max": 2.540490299987141,
+            "reps": 7
+          }
+        },
+        "distinct": {
+          "raw_polars": {
+            "median": 1.4198723000008613,
+            "min": 0.8671390999807045,
+            "max": 3.6439210000098683,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 5.060696600005031,
+            "min": 3.098109500017017,
+            "max": 9.292134799994528,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.9890663000405766,
+            "min": 0.6482190000242554,
+            "max": 1.2524737999774516,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 1.2314275999669917,
+            "min": 0.6533475000178441,
+            "max": 2.250713200017344,
+            "reps": 7
+          }
+        },
+        "count": {
+          "raw_polars": {
+            "median": 0.23442499997327104,
+            "min": 0.1194418000523001,
+            "max": 3.364166799990926,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 2.9835049000103027,
+            "min": 1.4938330000150017,
+            "max": 10.41268999996828,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.15769750002073124,
+            "min": 0.09402119996957481,
+            "max": 0.42728629999328405,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.2380991000100039,
+            "min": 0.0900765000260435,
+            "max": 0.5343936999561265,
+            "reps": 7
+          }
+        },
+        "add_count": {
+          "raw_polars": {
+            "median": 0.41357410000637174,
+            "min": 0.280281700019259,
+            "max": 2.656271799991373,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.4085073999594897,
+            "min": 0.2423242999939248,
+            "max": 3.281588100013323,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.471816300007049,
+            "min": 0.3188936999649741,
+            "max": 1.092265299987048,
+            "reps": 7
+          }
+        },
+        "transmute": {
+          "raw_polars": {
+            "median": 0.03703890001634136,
+            "min": 0.028281699982471764,
+            "max": 0.07609379995847121,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.040934699994977564,
+            "min": 0.029293900006450713,
+            "max": 0.056577100011054426,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.03555359999882057,
+            "min": 0.026349099993240088,
+            "max": 0.07408180000493303,
+            "reps": 7
+          }
+        },
+        "relocate": {
+          "raw_polars": {
+            "median": 0.0002658999874256551,
+            "min": 0.00021600001491606236,
+            "max": 0.01990399998612702,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.285678900021594,
+            "min": 1.0533916000276804,
+            "max": 4.20201010000892,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.000519900000654161,
+            "min": 0.0002452000044286251,
+            "max": 0.0008749000262469053,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0002578999847173691,
+            "min": 0.00023550004698336124,
+            "max": 0.000700899981893599,
+            "reps": 7
+          }
+        },
+        "slice_min": {
+          "raw_polars": {
+            "median": 0.3964022999862209,
+            "min": 0.3558080000220798,
+            "max": 0.8924225000082515,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.6546322999638505,
+            "min": 0.9401267999783158,
+            "max": 2.2121879999758676,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.04938030004268512,
+            "min": 0.03474259999347851,
+            "max": 0.12018309999257326,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.056224800006020814,
+            "min": 0.04540280002402142,
+            "max": 0.10041909996652976,
+            "reps": 7
+          }
+        },
+        "slice_max": {
+          "raw_polars": {
+            "median": 0.5332354999845847,
+            "min": 0.3794227999751456,
+            "max": 0.8217723999987356,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.36316170002101,
+            "min": 1.1734074000269175,
+            "max": 2.1749514000257477,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.0769027000060305,
+            "min": 0.05407610000111163,
+            "max": 0.13157790002878755,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.08430970000335947,
+            "min": 0.06413600000087172,
+            "max": 0.15647839999292046,
+            "reps": 7
+          }
+        },
+        "drop_na": {
+          "raw_polars": {
+            "median": 0.06255360000068322,
+            "min": 0.03745760000310838,
+            "max": 0.25090059998910874,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.057116599986329675,
+            "min": 0.04376949998550117,
+            "max": 0.17337969999061897,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.07815349998418242,
+            "min": 0.036426200007554144,
+            "max": 0.41358839999884367,
+            "reps": 7
+          }
+        },
+        "replace_na": {
+          "raw_polars": {
+            "median": 0.025034200050868094,
+            "min": 0.016835899965371937,
+            "max": 0.03411720000440255,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.02383740001823753,
+            "min": 0.018788999994285405,
+            "max": 0.0281667000381276,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.02430739998817444,
+            "min": 0.01669630000833422,
+            "max": 0.03240580001147464,
+            "reps": 7
+          }
+        },
+        "fill": {
+          "raw_polars": {
+            "median": 0.05756310001015663,
+            "min": 0.049134000029880553,
+            "max": 0.07334100001025945,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.05680880002910271,
+            "min": 0.05059970001457259,
+            "max": 0.09131480002542958,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0695914999814704,
+            "min": 0.059336100006476045,
+            "max": 0.07662399997934699,
+            "reps": 7
+          }
+        },
+        "pivot_longer": {
+          "raw_polars": {
+            "median": 0.1508839000016451,
+            "min": 0.10250599996652454,
+            "max": 0.1613208000198938,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 2.615724599978421,
+            "min": 2.0540638000238687,
+            "max": 4.005008200008888,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.13568249996751547,
+            "min": 0.06292280001798645,
+            "max": 0.17627130000619218,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.4201109000132419,
+            "min": 0.29332309996243566,
+            "max": 0.6892847000272013,
+            "reps": 7
+          }
+        },
+        "semi_join": {
+          "raw_polars": {
+            "median": 0.1117571999784559,
+            "min": 0.09624980000080541,
+            "max": 0.2685407999670133,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.10647979995701462,
+            "min": 0.09296770003857091,
+            "max": 0.13358359999256209,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.12436820002039894,
+            "min": 0.09481310000410303,
+            "max": 0.16945509996730834,
+            "reps": 7
+          }
+        },
+        "anti_join": {
+          "raw_polars": {
+            "median": 0.19426179997390136,
+            "min": 0.10920549998991191,
+            "max": 0.46998140000505373,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.20403199997963384,
+            "min": 0.11906960001215339,
+            "max": 0.39408559998264536,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.18195609998656437,
+            "min": 0.1179619999602437,
+            "max": 0.25505219999467954,
+            "reps": 7
+          }
+        },
+        "across_mutate": {
+          "raw_polars": {
+            "median": 0.044463600032031536,
+            "min": 0.030097900016698986,
+            "max": 0.10129760002018884,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.03758500004187226,
+            "min": 0.03392160002840683,
+            "max": 0.06083920004311949,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.038045299996156245,
+            "min": 0.03097279998473823,
+            "max": 0.05793989996891469,
+            "reps": 7
+          }
+        },
+        "across_summarise": {
+          "raw_polars": {
+            "median": 0.3190228000166826,
+            "min": 0.24050380004337057,
+            "max": 0.8233233999926597,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.5019072000286542,
+            "min": 0.2629192000022158,
+            "max": 0.6649221000261605,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.3344398000044748,
+            "min": 0.27002470003208145,
+            "max": 0.6000921999802813,
+            "reps": 7
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "median": 0.7401440000394359,
+            "min": 0.7020613000495359,
+            "max": 2.4819729999871925,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.6875119000324048,
+            "min": 0.597400100028608,
+            "max": 0.8520421999855898,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 1.0401400999980979,
+            "min": 0.6365496999933384,
+            "max": 3.395305100013502,
+            "reps": 7
+          }
+        }
+      },
+      "memory": {
+        "pipeline": {
+          "raw_polars": {
+            "baseline_mb": 368.99609375,
+            "extra_peak_mb": 182.71875
+          },
+          "legacy": {
+            "baseline_mb": 718.04296875,
+            "extra_peak_mb": 546.23046875
+          },
+          "new_fast": {
+            "baseline_mb": 368.8984375,
+            "extra_peak_mb": 182.87890625
+          },
+          "new_dplyr": {
+            "baseline_mb": 369.109375,
+            "extra_peak_mb": 183.0390625
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "baseline_mb": 369.3671875,
+            "extra_peak_mb": 526.26171875
+          },
+          "new_fast": {
+            "baseline_mb": 369.625,
+            "extra_peak_mb": 527.625
+          },
+          "new_dplyr": {
+            "baseline_mb": 368.72265625,
+            "extra_peak_mb": 522.23828125
+          }
+        }
+      }
+    },
+    "15000000": {
+      "validation": {
+        "select": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "filter_mutate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "group_mean": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "arrange": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "join": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "pipeline": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "distinct": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "count": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "add_count": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "transmute": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "relocate": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (same row order)",
+          "new_fast": "ok (same row order)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_min": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "slice_max": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (same row order)"
+        },
+        "drop_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "replace_na": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "fill": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "pivot_longer": {
+          "reference": "Current (pandas)",
+          "raw_polars": "ok (after sorting)",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "semi_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "anti_join": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_mutate": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "across_summarise": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        },
+        "long_pipeline": {
+          "reference": "Raw Polars lazy",
+          "raw_polars": "reference",
+          "new_fast": "ok (after sorting)",
+          "new_dplyr": "ok (after sorting)"
+        }
+      },
+      "end_to_end": {
+        "select": {
+          "raw_polars": {
+            "median": 0.00045229995157569647,
+            "min": 0.00033730000723153353,
+            "max": 0.0005521000130102038,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 4.281377500039525,
+            "min": 3.228000900009647,
+            "max": 9.040202100004535,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.00048430002061650157,
+            "min": 0.00028740003472194076,
+            "max": 0.005220699997153133,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0005104999872855842,
+            "min": 0.0004668000037781894,
+            "max": 0.0011014000046998262,
+            "reps": 7
+          }
+        },
+        "filter_mutate": {
+          "raw_polars": {
+            "median": 0.4327880999771878,
+            "min": 0.2532660999568179,
+            "max": 1.5019002999761142,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 13.608937699988019,
+            "min": 11.65257009997731,
+            "max": 17.677982299996074,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.4827594999806024,
+            "min": 0.2842706000083126,
+            "max": 2.975789199990686,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 1.3409561999724247,
+            "min": 0.27882740000495687,
+            "max": 2.8176470999605954,
+            "reps": 7
+          }
+        },
+        "group_mean": {
+          "raw_polars": {
+            "median": 0.7587497999775223,
+            "min": 0.6425998999620788,
+            "max": 1.0010486000101082,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 11.312819699989632,
+            "min": 4.983632100047544,
+            "max": 17.919721200014465,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.7596325000049546,
+            "min": 0.5026151000056416,
+            "max": 6.285285399993882,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.859846799983643,
+            "min": 0.4899879999575205,
+            "max": 5.213300200004596,
+            "reps": 7
+          }
+        },
+        "arrange": {
+          "raw_polars": {
+            "median": 14.188669299997855,
+            "min": 5.146893999946769,
+            "max": 16.259950599982403,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 19.994370500033256,
+            "min": 6.199199999973644,
+            "max": 21.08622539998032,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 7.150356600002851,
+            "min": 3.897137099993415,
+            "max": 13.220853200007696,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 13.033904400013853,
+            "min": 4.972738599986769,
+            "max": 23.42028170003323,
+            "reps": 7
+          }
+        },
+        "join": {
+          "raw_polars": {
+            "median": 0.17830400000093505,
+            "min": 0.15398810000624508,
+            "max": 0.2621180000132881,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 5.426033099996857,
+            "min": 4.987611399963498,
+            "max": 6.582503999990877,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.18224270001519471,
+            "min": 0.1504679000354372,
+            "max": 0.3019001999637112,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.19026609999127686,
+            "min": 0.138297000026796,
+            "max": 0.28178449999541044,
+            "reps": 7
+          }
+        },
+        "pipeline": {
+          "raw_polars": {
+            "median": 0.14200280001387,
+            "min": 0.12813299999106675,
+            "max": 0.22084879997419193,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 4.578699000005145,
+            "min": 4.227134999993723,
+            "max": 4.956326599989552,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.1477720999973826,
+            "min": 0.13083640002878383,
+            "max": 0.2630508000147529,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.15451210003811866,
+            "min": 0.12954629998421296,
+            "max": 0.23399370000697672,
+            "reps": 7
+          }
+        },
+        "distinct": {
+          "raw_polars": {
+            "median": 0.6773790000006557,
+            "min": 0.6005290999892168,
+            "max": 1.2886291000177152,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 4.081219899991993,
+            "min": 3.4970976999611594,
+            "max": 4.472694299998693,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.700007299950812,
+            "min": 0.5515495999716222,
+            "max": 1.241050400014501,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.7263960000127554,
+            "min": 0.5308172000222839,
+            "max": 1.7023444999940693,
+            "reps": 7
+          }
+        },
+        "count": {
+          "raw_polars": {
+            "median": 0.09925610001664609,
+            "min": 0.09287900000344962,
+            "max": 0.19535759999416769,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 2.336048499972094,
+            "min": 2.0219682999886572,
+            "max": 2.5301858999882825,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.10358989995438606,
+            "min": 0.09665610000956804,
+            "max": 0.21164290001615882,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.10040890000527725,
+            "min": 0.09134620003169402,
+            "max": 0.17256749997613952,
+            "reps": 7
+          }
+        },
+        "add_count": {
+          "raw_polars": {
+            "median": 0.39311479998286813,
+            "min": 0.28738930000690743,
+            "max": 0.7075372000108473,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.46625210001366213,
+            "min": 0.3467436999781057,
+            "max": 0.7464312000083737,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.4435382999945432,
+            "min": 0.34346419997746125,
+            "max": 0.9374746000394225,
+            "reps": 7
+          }
+        },
+        "transmute": {
+          "raw_polars": {
+            "median": 0.052559099975042045,
+            "min": 0.04098980000708252,
+            "max": 0.06899309996515512,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.04979670001193881,
+            "min": 0.045453200000338256,
+            "max": 0.06113200000254437,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.05568580003455281,
+            "min": 0.043281299993395805,
+            "max": 0.06492109998362139,
+            "reps": 7
+          }
+        },
+        "relocate": {
+          "raw_polars": {
+            "median": 0.0001742999884299934,
+            "min": 0.00013780000153928995,
+            "max": 0.000208800018299371,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 1.9083496000384912,
+            "min": 1.766146999958437,
+            "max": 2.5268965999712236,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.00019200000679120421,
+            "min": 0.0001446999958716333,
+            "max": 0.0002615000121295452,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.0002699000178836286,
+            "min": 0.00015400000847876072,
+            "max": 0.0003997000167146325,
+            "reps": 7
+          }
+        },
+        "slice_min": {
+          "raw_polars": {
+            "median": 0.7909553999779746,
+            "min": 0.6672748000128195,
+            "max": 1.7468482999829575,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 2.2297757000196725,
+            "min": 1.7199880999978632,
+            "max": 2.6578664999688044,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.1268663000082597,
+            "min": 0.05679969995981082,
+            "max": 0.38442730001406744,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.1401616000221111,
+            "min": 0.06826480000745505,
+            "max": 0.29626019997522235,
+            "reps": 7
+          }
+        },
+        "slice_max": {
+          "raw_polars": {
+            "median": 0.8275302000110969,
+            "min": 0.6651320999953896,
+            "max": 1.0059695999952964,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 2.2621733999694698,
+            "min": 1.802198999968823,
+            "max": 2.7512411999632604,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.09421389998169616,
+            "min": 0.06224110000766814,
+            "max": 0.15231940004741773,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.09451580001041293,
+            "min": 0.06999739998718724,
+            "max": 0.2077848999761045,
+            "reps": 7
+          }
+        },
+        "drop_na": {
+          "raw_polars": {
+            "median": 0.10828680003760383,
+            "min": 0.09574780002003536,
+            "max": 0.1272266000160016,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.09997500001918525,
+            "min": 0.0921925000147894,
+            "max": 0.11168609996093437,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.1097205999540165,
+            "min": 0.08809410000685602,
+            "max": 0.20064649998676032,
+            "reps": 7
+          }
+        },
+        "replace_na": {
+          "raw_polars": {
+            "median": 0.0515224999981001,
+            "min": 0.0470672000083141,
+            "max": 0.06932990002678707,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.04618720000144094,
+            "min": 0.04050389997428283,
+            "max": 0.07096869999077171,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.048255300032906234,
+            "min": 0.04210540000349283,
+            "max": 0.057839500019326806,
+            "reps": 7
+          }
+        },
+        "fill": {
+          "raw_polars": {
+            "median": 0.10811869997996837,
+            "min": 0.10053090000292286,
+            "max": 0.17323039995972067,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.13410780002595857,
+            "min": 0.12415819999296218,
+            "max": 0.14766509999753907,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.12263320002239197,
+            "min": 0.10157619998790324,
+            "max": 0.17340450000483543,
+            "reps": 7
+          }
+        },
+        "pivot_longer": {
+          "raw_polars": {
+            "median": 0.16187519999220967,
+            "min": 0.12707500002579764,
+            "max": 0.3296995999990031,
+            "reps": 7
+          },
+          "legacy": {
+            "median": 3.4749975000158884,
+            "min": 3.0333933000219986,
+            "max": 4.712725599994883,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.26173989998642355,
+            "min": 0.17798879998736084,
+            "max": 0.3273208000464365,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.6916438000043854,
+            "min": 0.5844966000295244,
+            "max": 0.8172960000229068,
+            "reps": 7
+          }
+        },
+        "semi_join": {
+          "raw_polars": {
+            "median": 0.22784669999964535,
+            "min": 0.2061552000232041,
+            "max": 0.3576406000065617,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.24028299999190494,
+            "min": 0.21259049995569512,
+            "max": 0.29817939997883514,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.2373022999963723,
+            "min": 0.2089957999996841,
+            "max": 0.28385160001926124,
+            "reps": 7
+          }
+        },
+        "anti_join": {
+          "raw_polars": {
+            "median": 0.2008868000120856,
+            "min": 0.18355240003438666,
+            "max": 0.2611306000035256,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.18873799999710172,
+            "min": 0.16175780002959073,
+            "max": 0.31855490000452846,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.19720180000877008,
+            "min": 0.18064590002177283,
+            "max": 0.3088947999640368,
+            "reps": 7
+          }
+        },
+        "across_mutate": {
+          "raw_polars": {
+            "median": 0.07673329999670386,
+            "min": 0.06402979994891211,
+            "max": 0.09136249998118728,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.08062329998938367,
+            "min": 0.05880900000920519,
+            "max": 0.11973420000867918,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.07315270003164187,
+            "min": 0.05932790000224486,
+            "max": 0.12089000002015382,
+            "reps": 7
+          }
+        },
+        "across_summarise": {
+          "raw_polars": {
+            "median": 0.6324303000001237,
+            "min": 0.46303380001336336,
+            "max": 0.844541099970229,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 0.6394137000315823,
+            "min": 0.49514680000720546,
+            "max": 0.9481836999766529,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 0.5407118000439368,
+            "min": 0.4633699000114575,
+            "max": 0.966705999977421,
+            "reps": 7
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "median": 1.1588958000065759,
+            "min": 0.9816562000196427,
+            "max": 1.6682215000037104,
+            "reps": 7
+          },
+          "new_fast": {
+            "median": 1.3182682000333443,
+            "min": 1.0926635999931023,
+            "max": 1.7453289999975823,
+            "reps": 7
+          },
+          "new_dplyr": {
+            "median": 1.1096842999686487,
+            "min": 0.9612129000015557,
+            "max": 1.7661322000203654,
+            "reps": 7
+          }
+        }
+      },
+      "memory": {
+        "pipeline": {
+          "raw_polars": {
+            "baseline_mb": 905.54296875,
+            "extra_peak_mb": 436.12109375
+          },
+          "legacy": {
+            "baseline_mb": 1711.90234375,
+            "extra_peak_mb": 1634.58203125
+          },
+          "new_fast": {
+            "baseline_mb": 906.0234375,
+            "extra_peak_mb": 488.69140625
+          },
+          "new_dplyr": {
+            "baseline_mb": 906.38671875,
+            "extra_peak_mb": 417.2421875
+          }
+        },
+        "long_pipeline": {
+          "raw_polars": {
+            "baseline_mb": 905.3671875,
+            "extra_peak_mb": 1316.27734375
+          },
+          "new_fast": {
+            "baseline_mb": 905.41796875,
+            "extra_peak_mb": 1290.109375
+          },
+          "new_dplyr": {
+            "baseline_mb": 906.3125,
+            "extra_peak_mb": 1315.2109375
+          }
+        }
+      }
+    }
+  },
+  "plan_construction": {
+    "select": {
+      "raw_polars": {
+        "median": 8.150003850460052e-06,
+        "min": 4.199973773211241e-06,
+        "max": 1.8200022168457508e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 5.499983672052622e-06,
+        "min": 5.299982149153948e-06,
+        "max": 1.0300020221620798e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 5.399982910603285e-06,
+        "min": 5.199981387704611e-06,
+        "max": 1.0500021744519472e-05,
+        "reps": 300
+      }
+    },
+    "filter_mutate": {
+      "raw_polars": {
+        "median": 2.0650011720135808e-05,
+        "min": 1.8200022168457508e-05,
+        "max": 0.00013310002395883203,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 3.739999374374747e-05,
+        "min": 3.5800039768218994e-05,
+        "max": 6.420002318918705e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 3.779999678954482e-05,
+        "min": 3.590004052966833e-05,
+        "max": 0.0001243999577127397,
+        "reps": 300
+      }
+    },
+    "group_mean": {
+      "raw_polars": {
+        "median": 5.700043402612209e-06,
+        "min": 5.599984433501959e-06,
+        "max": 1.1300027836114168e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.5199999324977398e-05,
+        "min": 1.3299984857439995e-05,
+        "max": 0.0001677999971434474,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.8199963960796595e-05,
+        "min": 1.71000137925148e-05,
+        "max": 2.7399975806474686e-05,
+        "reps": 300
+      }
+    },
+    "arrange": {
+      "raw_polars": {
+        "median": 3.6999699659645557e-06,
+        "min": 3.4999684430658817e-06,
+        "max": 1.7300015315413475e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 5.89998671784997e-06,
+        "min": 5.799985956400633e-06,
+        "max": 1.6799953300505877e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 5.999987479299307e-06,
+        "min": 5.699985194951296e-06,
+        "max": 5.790003342553973e-05,
+        "reps": 300
+      }
+    },
+    "join": {
+      "raw_polars": {
+        "median": 3.500026650726795e-06,
+        "min": 3.1999661587178707e-06,
+        "max": 5.289999535307288e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 8.949980838224292e-06,
+        "min": 8.000002708286047e-06,
+        "max": 1.9599974621087313e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 6.89999433234334e-06,
+        "min": 6.00004568696022e-06,
+        "max": 1.7900019884109497e-05,
+        "reps": 300
+      }
+    },
+    "pipeline": {
+      "raw_polars": {
+        "median": 2.9049988370388746e-05,
+        "min": 2.729997504502535e-05,
+        "max": 0.00014269998064264655,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 0.0001023499935399741,
+        "min": 9.679998038336635e-05,
+        "max": 0.00036040000850334764,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 0.00010519998613744974,
+        "min": 0.00010110001312568784,
+        "max": 0.0002690000110305846,
+        "reps": 300
+      }
+    },
+    "distinct": {
+      "raw_polars": {
+        "median": 5.099980626255274e-06,
+        "min": 4.8999791033566e-06,
+        "max": 4.5000051613897085e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 6.199989002197981e-06,
+        "min": 5.89998671784997e-06,
+        "max": 2.8399983420968056e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 7.199996616691351e-06,
+        "min": 5.900044925510883e-06,
+        "max": 5.199998850002885e-05,
+        "reps": 300
+      }
+    },
+    "count": {
+      "raw_polars": {
+        "median": 5.099980626255274e-06,
+        "min": 4.800036549568176e-06,
+        "max": 3.389996709302068e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.0700023267418146e-05,
+        "min": 1.0299962013959885e-05,
+        "max": 2.239999594166875e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.3999990187585354e-05,
+        "min": 1.3400043826550245e-05,
+        "max": 2.19999928958714e-05,
+        "reps": 300
+      }
+    },
+    "add_count": {
+      "raw_polars": {
+        "median": 1.0799994925037026e-05,
+        "min": 6.999995093792677e-06,
+        "max": 6.420002318918705e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 9.699957445263863e-06,
+        "min": 8.000002708286047e-06,
+        "max": 0.00023220002185553312,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 8.90000956133008e-06,
+        "min": 8.000002708286047e-06,
+        "max": 0.00014269998064264655,
+        "reps": 300
+      }
+    },
+    "transmute": {
+      "raw_polars": {
+        "median": 9.600014891475439e-06,
+        "min": 9.299954399466515e-06,
+        "max": 1.4199991710484028e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.6700010746717453e-05,
+        "min": 1.580000389367342e-05,
+        "max": 4.469999112188816e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.6700010746717453e-05,
+        "min": 1.550000160932541e-05,
+        "max": 7.970002479851246e-05,
+        "reps": 300
+      }
+    },
+    "relocate": {
+      "raw_polars": {
+        "median": 1.090002479031682e-05,
+        "min": 1.0399962775409222e-05,
+        "max": 2.099998528137803e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.3199984095990658e-05,
+        "min": 9.199953638017178e-06,
+        "max": 2.2299995180219412e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 9.499985026195645e-06,
+        "min": 9.000010322779417e-06,
+        "max": 2.9099988751113415e-05,
+        "reps": 300
+      }
+    },
+    "slice_min": {
+      "raw_polars": {
+        "median": 3.400025889277458e-06,
+        "min": 3.100023604929447e-06,
+        "max": 1.0100018698722124e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.1200027074664831e-05,
+        "min": 1.0400020983070135e-05,
+        "max": 3.520003519952297e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.2100033927708864e-05,
+        "min": 1.1400028597563505e-05,
+        "max": 2.300000051036477e-05,
+        "reps": 300
+      }
+    },
+    "slice_max": {
+      "raw_polars": {
+        "median": 3.400025889277458e-06,
+        "min": 3.1999661587178707e-06,
+        "max": 5.099980626255274e-06,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.6099947970360518e-05,
+        "min": 1.5300000086426735e-05,
+        "max": 3.2100011594593525e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.829999382607639e-05,
+        "min": 1.6000005416572094e-05,
+        "max": 8.58000130392611e-05,
+        "reps": 300
+      }
+    },
+    "drop_na": {
+      "raw_polars": {
+        "median": 3.5999692045152187e-06,
+        "min": 3.3999676816165447e-06,
+        "max": 1.9499973859637976e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 4.599976819008589e-06,
+        "min": 4.399975296109915e-06,
+        "max": 1.3999990187585354e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 4.599976819008589e-06,
+        "min": 4.399975296109915e-06,
+        "max": 2.4500011932104826e-05,
+        "reps": 300
+      }
+    },
+    "replace_na": {
+      "raw_polars": {
+        "median": 1.1000025551766157e-05,
+        "min": 1.0699965059757233e-05,
+        "max": 6.260001100599766e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 1.290004001930356e-05,
+        "min": 1.2499978765845299e-05,
+        "max": 4.999997327104211e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 1.7099984688684344e-05,
+        "min": 1.209997572004795e-05,
+        "max": 0.00035370001569390297,
+        "reps": 300
+      }
+    },
+    "fill": {
+      "raw_polars": {
+        "median": 5.300040356814861e-06,
+        "min": 3.8000289350748062e-06,
+        "max": 8.700008038431406e-06,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 7.099995855242014e-06,
+        "min": 6.89999433234334e-06,
+        "max": 1.3599987141788006e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 5.199981387704611e-06,
+        "min": 4.999979864805937e-06,
+        "max": 2.4699955247342587e-05,
+        "reps": 300
+      }
+    },
+    "pivot_longer": {
+      "raw_polars": {
+        "median": 1.009996049106121e-05,
+        "min": 9.800016414374113e-06,
+        "max": 1.71000137925148e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 5.189998773857951e-05,
+        "min": 1.810002140700817e-05,
+        "max": 0.00013450003461912274,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 2.5900022592395544e-05,
+        "min": 2.4300010409206152e-05,
+        "max": 0.0001925000105984509,
+        "reps": 300
+      }
+    },
+    "semi_join": {
+      "raw_polars": {
+        "median": 3.300025127828121e-06,
+        "min": 3.0999653972685337e-06,
+        "max": 1.680001150816679e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 5.799985956400633e-06,
+        "min": 5.500041879713535e-06,
+        "max": 8.200004231184721e-06,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 5.699985194951296e-06,
+        "min": 5.499983672052622e-06,
+        "max": 2.3800006601959467e-05,
+        "reps": 300
+      }
+    },
+    "anti_join": {
+      "raw_polars": {
+        "median": 3.300025127828121e-06,
+        "min": 3.0999653972685337e-06,
+        "max": 7.199996616691351e-06,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 6.599992047995329e-06,
+        "min": 5.89998671784997e-06,
+        "max": 0.0001210999907925725,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 8.500006515532732e-06,
+        "min": 7.700000423938036e-06,
+        "max": 4.120002267882228e-05,
+        "reps": 300
+      }
+    },
+    "across_mutate": {
+      "raw_polars": {
+        "median": 8.800008799880743e-06,
+        "min": 7.90000194683671e-06,
+        "max": 4.499999340623617e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 2.5800021830946207e-05,
+        "min": 2.4500011932104826e-05,
+        "max": 5.3099996875971556e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 2.6600027922540903e-05,
+        "min": 2.4900014977902174e-05,
+        "max": 0.00026050000451505184,
+        "reps": 300
+      }
+    },
+    "across_summarise": {
+      "raw_polars": {
+        "median": 1.0600022505968809e-05,
+        "min": 1.0399962775409222e-05,
+        "max": 1.7300015315413475e-05,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 3.4699973184615374e-05,
+        "min": 3.350002225488424e-05,
+        "max": 8.499994874000549e-05,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 3.940000897273421e-05,
+        "min": 3.789999755099416e-05,
+        "max": 0.0003065000055357814,
+        "reps": 300
+      }
+    },
+    "long_pipeline": {
+      "raw_polars": {
+        "median": 0.00010120001388713717,
+        "min": 9.210000280290842e-05,
+        "max": 0.0005043999990448356,
+        "reps": 300
+      },
+      "new_fast": {
+        "median": 0.0003924000193364918,
+        "min": 0.0003698000218719244,
+        "max": 0.0012024000170640647,
+        "reps": 300
+      },
+      "new_dplyr": {
+        "median": 0.0004027499817311764,
+        "min": 0.00037810002686455846,
+        "max": 0.005130500008817762,
+        "reps": 300
+      }
+    }
+  },
+  "plan_identity": {
+    "select": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "filter_mutate": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "group_mean": {
+      "new_fast": true,
+      "new_dplyr": false
+    },
+    "arrange": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "join": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "pipeline": {
+      "new_fast": false,
+      "new_dplyr": false
+    },
+    "distinct": {
+      "new_fast": true,
+      "new_dplyr": false
+    },
+    "count": {
+      "new_fast": false,
+      "new_dplyr": false
+    },
+    "add_count": {
+      "new_fast": false,
+      "new_dplyr": false
+    },
+    "transmute": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "relocate": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "slice_min": {
+      "new_fast": false,
+      "new_dplyr": false
+    },
+    "slice_max": {
+      "new_fast": false,
+      "new_dplyr": false
+    },
+    "drop_na": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "replace_na": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "fill": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "pivot_longer": {
+      "new_fast": true,
+      "new_dplyr": false
+    },
+    "semi_join": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "anti_join": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "across_mutate": {
+      "new_fast": true,
+      "new_dplyr": true
+    },
+    "across_summarise": {
+      "new_fast": true,
+      "new_dplyr": false
+    },
+    "long_pipeline": {
+      "new_fast": false,
+      "new_dplyr": false
+    }
+  }
+}

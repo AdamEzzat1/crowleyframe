@@ -1,92 +1,43 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Union
+from typing import Any, Callable, List
 
-from .api import Frame, GroupedFrame
+from .api import Frame
+
+_NOT_VERBS = {"from_pandas", "from_polars", "from_arrow"}
+
+
+def _is_verb(name: str) -> bool:
+    return not name.startswith("_") and name not in _NOT_VERBS and callable(getattr(Frame, name, None))
 
 
 class PipeNamespace:
     """
-    Small helper namespace for building pipeable operations.
+    Pipeable versions of every Frame verb.
 
-    Each method returns a callable that takes a Frame (or GroupedFrame)
-    and returns a new Frame/GroupedFrame, so you can write:
+    `pipe.verb(...)` returns a callable that applies `frame.verb(...)`,
+    so you can write:
 
         cf >> pipe.group_by("id") >> pipe.summarise(mean_x=("x", "mean"))
-        cf >> pipe.filter("x > 0") >> pipe.arrange("x")
-
-    This keeps the core verbs defined on Frame / GroupedFrame, while
-    still allowing a tidy, pipe-friendly style.
+        cf >> pipe.filter("x > 0") >> pipe.arrange("x") >> pipe.collect()
     """
 
-    # -----------------------------
-    # Grouped operations
-    # -----------------------------
-    def group_by(self, *cols: str) -> Callable[[Frame], GroupedFrame]:
-        def _op(frame: Frame) -> GroupedFrame:
-            return frame.group_by(*cols)
+    def __getattr__(self, name: str) -> Callable[..., Callable[[Frame], Any]]:
+        if not _is_verb(name):
+            raise AttributeError(f"pipe has no verb {name!r}")
 
-        return _op
+        def verb(*args: Any, **kwargs: Any) -> Callable[[Frame], Any]:
+            def _op(frame: Frame) -> Any:
+                return getattr(frame, name)(*args, **kwargs)
 
-    def summarise(
-        self,
-        **agg_specs: tuple[str, Union[str, Callable[..., Any]]],
-    ) -> Callable[[GroupedFrame], Frame]:
-        """
-        Pipe-friendly wrapper around GroupedFrame.summarise.
+            _op.__name__ = name
+            return _op
 
-        Example
-        -------
-        cf >> pipe.group_by("grp") >> pipe.summarise(
-            mean_x=("x", "mean"),
-            n=("x", "count"),
-        )
-        """
-        def _op(grouped: GroupedFrame) -> Frame:
-            return grouped.summarise(**agg_specs)
+        verb.__name__ = name
+        return verb
 
-        return _op
-
-    # -----------------------------
-    # Frame-level operations
-    # -----------------------------
-    def filter(self, expr: str) -> Callable[[Frame], Frame]:
-        def _op(frame: Frame) -> Frame:
-            return frame.filter(expr=expr)
-
-        return _op
-
-    def arrange(self, *cols: str) -> Callable[[Frame], Frame]:
-        def _op(frame: Frame) -> Frame:
-            return frame.arrange(*cols)
-
-        return _op
-
-    def select(self, *selectors: Any) -> Callable[[Frame], Frame]:
-        """
-        Pipe-friendly wrapper around Frame.select.
-
-        Example
-        -------
-        cf >> pipe.select("id", col.starts_with("user_"))
-        """
-        def _op(frame: Frame) -> Frame:
-            return frame.select(*selectors)
-
-        return _op
-
-    def mutate(self, **kwargs: Any) -> Callable[[Frame], Frame]:
-        """
-        Pipe-friendly wrapper around Frame.mutate.
-
-        Example
-        -------
-        cf >> pipe.mutate(z="(x - x.mean()) / x.std()")
-        """
-        def _op(frame: Frame) -> Frame:
-            return frame.mutate(**kwargs)
-
-        return _op
+    def __dir__(self) -> List[str]:
+        return sorted(name for name in dir(Frame) if _is_verb(name))
 
 
 pipe = PipeNamespace()

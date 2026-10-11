@@ -4,8 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "crowleyframe"
-version = "0.1.0"
-description = "A Rust-powered, tidyverse-inspired DataFrame manipulation library for Python."
+version = "0.2.0"
+description = "Tidyverse-style data manipulation for Python that compiles to Polars lazy plans."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
@@ -38,8 +38,12 @@ classifiers = [
 ]
 
 dependencies = [
+    # Tested on 1.17 and 1.23; 2.x changes the default lazy engine and is not yet verified.
+    "polars>=1.17,<2",
+    # Needed for to_pandas()/to_arrow() and the pandas-backed crowley_frame.legacy.
     "pandas>=1.5",
     "numpy>=1.23",
+    "pyarrow>=14",
 ]
 
 [project.urls]
